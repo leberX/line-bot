@@ -24,14 +24,16 @@ function handleEvent(event) {
   }
 
   return client.replyMessage(event.replyToken, {
-    type: 'text',
+    type: 'こんにちは！',
     text: event.message.text // Echo back the same message
   });
 }
 
 app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+  console.log('Server running on port ${port}');
 });
 
 console.log("SECRET:", process.env.CHANNEL_SECRET);
 console.log("TOKEN:", process.env.CHANNEL_ACCESS_TOKEN);
+
+
