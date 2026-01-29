@@ -13,27 +13,35 @@ const app = express();
 app.post('/webhook', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result));
+    .then(() => res.sendStatus(200))
+    .catch(err => {
+      console.error(err);
+      res.sendStatus(500);
+    });
 });
 
 const client = new line.Client(config);
 
-function handleEvent(event) {
+async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null);
+  }//
+
+  console.log("受信:",event.message.text);
+
+  return await client.replyMessage(event.replyToken, [
+    {
+    type: "text",
+    text: "テスト返信"
   }
+  ]);
+}//
 
-  return client.replyMessage(event.replyToken, {
-    type: 'こんにちは！',
-    text: event.message.text // Echo back the same message
-  });
-}
+const port = process.env.PORT || 3000;
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server running on port ${port}');
 });
 
-console.log("SECRET:", process.env.CHANNEL_SECRET);
-console.log("TOKEN:", process.env.CHANNEL_ACCESS_TOKEN);
-
+console.log("Bot is starting...");
 
