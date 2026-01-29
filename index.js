@@ -32,7 +32,7 @@ async function handleEvent(event) {
   return await client.replyMessage(event.replyToken, [
     {
     type: "text",
-    text: "テスト返信"
+    text: "初めまして！　あなたのお世話をするロボットです！"
   }
   ]);
 }//
