@@ -29,10 +29,19 @@ async function handleEvent(event) {
 
   console.log("受信:",event.message.text);
 
+  let replytext = '';
+  if　(event.message.text === 'こんにちは！'){
+      replytext = 'こんにちは！話しかけんなよ'
+    } else if (event.message.text ==='おはよう')
+        replytext = '起こしてんじゃねよ'
+      else {
+        replytext = '用がないのに話しかけんなよ'
+      }
+
   return await client.replyMessage(event.replyToken, [
     {
     type: "text",
-    text: "初めまして！　あなたのお世話をするロボットです！"
+    text: "初めまして！あなたのお世話をするロボットです！"
   }
   ]);
 }//
