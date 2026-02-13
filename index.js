@@ -30,7 +30,7 @@ async function handleEvent(event) {
   console.log("受信:",event.message.text);
 
   let replytext = '';
-  if　(event.message.text === 'こんにちは！'){
+  if(event.message.text === 'こんにちは！'){
       replytext = 'こんにちは！話しかけんなよ'
     } else if (event.message.text ==='おはよう')
         replytext = '起こしてんじゃねよ'
