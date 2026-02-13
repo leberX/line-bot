@@ -31,11 +31,11 @@ async function handleEvent(event) {
 
   let replytext = '';
   if(event.message.text === 'こんにちは！'){
-      replytext = 'こんにちは！話しかけんなよ'
+      replytext = 'こんにちは！調子はいかがでしょうか？'
     } else if (event.message.text ==='おはよう')
-        replytext = '起こしてんじゃねよ'
+        replytext = 'おはようございます！今日も一日頑張りましょう！'
       else {
-        replytext = '用がないのに話しかけんなよ'
+        replytext = 'まだ学習中です！'
       }
 
   return await client.replyMessage(event.replyToken, [
