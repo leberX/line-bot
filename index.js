@@ -22,17 +22,13 @@ console.log("=== サーバー起動開始 ===");
 
 // ===== ④ Webhook（LINEからの受信）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
-  console.log("Webhook受信");
+  const events = req.body.events;
 
-  try {
-    const events = req.body.events;
-    console.log("イベント数:", events.length);
+  events.forEach(event => {
+    console.log("userId:", event.source.userId);
+  });
 
-    res.sendStatus(200);
-  } catch (err) {
-    console.error("Webhookエラー:", err);
-    res.sendStatus(500);
-  }
+  res.sendStatus(200);
 });
 
 // ===== ⑤ cron（1分ごとテスト）=====
@@ -58,12 +54,3 @@ app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
 
-app.post('/webhook', line.middleware(config), async (req, res) => {
-  const events = req.body.events;
-
-  events.forEach(event => {
-    console.log("userId:", event.source.userId);
-  });
-
-  res.sendStatus(200);
-});
