@@ -57,3 +57,13 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
+
+app.post('/webhook', line.middleware(config), async (req, res) => {
+  const events = req.body.events;
+
+  events.forEach(event => {
+    console.log("userId:", event.source.userId);
+  });
+
+  res.sendStatus(200);
+});
