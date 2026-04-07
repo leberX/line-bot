@@ -1,7 +1,10 @@
-require('dotenv').config();
-
 const express = require('express');
 const line = require('@line/bot-sdk');
+const cron = require('node-cron');
+
+require('dotenv').config();
+
+const app = express();
 
 const Config = {
  channelAccessToken : process.env.CHANNEL_ACCESS_TOKEN,
@@ -51,10 +54,6 @@ app.listen(port, () => {
 });
 
 console.log("Bot is starting...");
-
-const cron = require('node-cron');
-
-const app = express();
 
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
