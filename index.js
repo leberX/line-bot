@@ -5,8 +5,6 @@ const Config = {
  channelSecret : process.env.CHANNEL_SECRET,
 };
 
-const App = express();
-
 App.post('/webhook', line.middleware(config), (req, res) => {
   Promise
     .all(req.body.events.map(handleEvent))
