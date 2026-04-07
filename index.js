@@ -54,9 +54,9 @@ app.listen(port, () => {
 
 console.log("Bot is starting...");
 
-import express from "express";
-import line from "@line/bot-sdk";
-import cron from "node-cron";
+const express = require('express');
+const line = require('@line/bot-sdk');
+const cron = require('node-cron');
 
 const app = express();
 
