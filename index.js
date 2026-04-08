@@ -20,16 +20,33 @@ const TARGET_USER_ID = 'ここに自分のuserId';
 // ===== ③ 起動確認ログ =====
 console.log("=== サーバー起動開始 ===");
 
-// ===== ④ Webhook（LINEからの受信）=====
+// ===== Webhook =====
 app.post('/webhook', line.middleware(config), async (req, res) => {
   const events = req.body.events;
 
-  events.forEach(event => {
-    console.log("userId:", event.source.userId);
-  });
+  await Promise.all(events.map(handleEvent));
 
   res.sendStatus(200);
 });
+
+// ===== ここを新しく追加 =====
+async function handleEvent(event) {
+
+  console.log("Webhook hit!");
+
+  console.log("event:", JSON.stringify(event, null, 2));
+
+  if (event.type !== 'message' || event.message.type !== 'text') {
+    return null;
+  }
+
+  console.log("userId:", event.source.userId);
+
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: "テスト返信"
+  });
+}
 
 // ===== ⑤ cron（1分ごとテスト）=====
 cron.schedule('* * * * *', async () => {
