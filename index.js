@@ -44,7 +44,7 @@ async function handleEvent(event) {
 
   return client.replyMessage(event.replyToken, {
     type: "text",
-    text: "テスト返信"
+    text: 'あなたのIDは\n${userid}'
   });
 }
 
