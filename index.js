@@ -15,38 +15,25 @@ const config = {
 const client = new line.Client(config);
 
 // ★ 自分のuserIdを入れる
-const TARGET_USER_ID = 'ここに自分のuserId';
+const TARGET_USER_ID = 'Ucf5eea1d586f6afb69cccfd8248c2d75';
 
 // ===== ③ 起動確認ログ =====
 console.log("=== サーバー起動開始 ===");
 
-// ===== Webhook =====
+// ===== ④ Webhook（LINEからの受信）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
-  const events = req.body.events;
+  console.log("Webhook受信");
 
-  await Promise.all(events.map(handleEvent));
+  try {
+    const events = req.body.events;
+    console.log("イベント数:", events.length);
 
-  res.sendStatus(200);
-});
-
-// ===== ここを新しく追加 =====
-async function handleEvent(event) {
-
-  console.log("Webhook hit!");
-
-  console.log("event:", JSON.stringify(event, null, 2));
-
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    return null;
+    res.sendStatus(200);
+  } catch (err) {
+    console.error("Webhookエラー:", err);
+    res.sendStatus(500);
   }
-
-  console.log("userId:", event.source.userId);
-
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: 'あなたのIDは\n${userid}'
-  });
-}
+});
 
 // ===== ⑤ cron（1分ごとテスト）=====
 cron.schedule('* * * * *', async () => {
@@ -70,4 +57,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
 });
-
