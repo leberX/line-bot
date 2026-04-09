@@ -36,6 +36,7 @@ async function handleEvent(event) {
   }
 
   const userMessage = event.message.text.trim();
+  let lastReplyTime = Date.now();
   let replyText = "";
 
   // ===== 健康チェック回答 =====
