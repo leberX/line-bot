@@ -39,6 +39,8 @@ async function handleEvent(event) {
 
   lastReplyTime = Date.now();
 
+  let notified = false;
+
   const userMessage = event.message.text.trim();
   let replyText = "";
 
@@ -89,6 +91,10 @@ cron.schedule('* * * * *', async () => {
 
   const now = Date.now();
   const diff = now - lastReplyTime;
+
+  console.log("現在時刻:", new Date());
+  console.log("最終返信:", new Date(lastReplyTime));
+  console.log("差分(ms):", diff);
 
   // 24時間（ミリ秒）
   const LIMIT = 24 * 60 * 60 * 1000;
