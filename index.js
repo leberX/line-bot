@@ -14,6 +14,8 @@ const config = {
 
 const client = new line.Client(config);
 
+let lastReplyTime = Date.now();
+
 // 親のuserId
 const PARENT_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // 子供のuserId
@@ -35,8 +37,9 @@ async function handleEvent(event) {
     return null;
   }
 
+  lastReplyTime = Date.now();
+
   const userMessage = event.message.text.trim();
-  let lastReplyTime = Date.now();
   let replyText = "";
 
   // ===== 健康チェック回答 =====
