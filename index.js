@@ -59,7 +59,7 @@ async function handleEvent(event) {
   });
 }
 // ===== cron（毎朝9時）=====
-cron.schedule('0 9 * * *', async () => {
+cron.schedule('* * * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
 
   try {
@@ -77,6 +77,28 @@ cron.schedule('0 9 * * *', async () => {
     console.log("✅ 送信成功");
   } catch (error) {
     console.error("❌ 送信失敗:", error);
+  }
+});
+// ===== 未返信検知（1時間ごと）=====
+cron.schedule('* * * * *', async () => {
+  console.log("⏳ 未返信チェック");
+
+  const now = Date.now();
+  const diff = now - lastReplyTime;
+
+  // 24時間（ミリ秒）
+  const LIMIT = 10*1000;
+
+  if (diff > LIMIT) {
+    try {
+      await client.pushMessage(CHILD_USER_ID, {
+        type: "text",
+        text: "⚠️ 24時間返信がありません。確認してください。"
+      });
+      console.log("🚨 未返信通知送信");
+    } catch (err) {
+      console.error("❌ 未返信通知失敗", err);
+    }
   }
 });
 
