@@ -14,9 +14,10 @@ const config = {
 
 const client = new line.Client(config);
 
-// ★ 自分のuserId
-const TARGET_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
-
+// 親のuserId
+const PARENT_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
+// 子供のuserId
+const CHILD_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // ===== 起動確認 =====
 console.log("=== 健康チェックBot 起動 ===");
 
@@ -46,27 +47,23 @@ async function handleEvent(event) {
     replyText = "少し心配です。今日はしっかり休むのも戦略です";
   } 
 
-  // ===== その他 =====
-  else if (userMessage.includes("疲れた")) {
-    replyText = "それだけやってる証拠だ。一旦リセットしよう";
-  } else if (userMessage.includes("眠い")) {
-    replyText = "睡眠は最優先だ。今日は早く寝ろ";
-  } else {
-    replyText = "1〜3で体調を教えてください\n\n1:良い\n2:普通\n3:悪い";
+  await client.pushMessage(CHILD_USER_ID, {
+      type: "text",
+      text: "⚠️ 親の体調が『悪い』と報告されました"
+    });
   }
 
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
   });
-}
 
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
 
   try {
-    await client.pushMessage(TARGET_USER_ID, {
+    await client.pushMessage(PARENT_USER_ID, {
       type: "text",
       text: `おはようございます☀️
 
