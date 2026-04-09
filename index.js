@@ -63,7 +63,7 @@ async function handleEvent(event) {
   });
 }
 // ===== cron（毎朝9時）=====
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
 
   try {
@@ -91,7 +91,7 @@ cron.schedule('* * * * *', async () => {
   const diff = now - lastReplyTime;
 
   // 24時間（ミリ秒）
-  const LIMIT = 10*1000;
+  const LIMIT = 24 * 60 * 60 * 1000;
 
   if (diff > LIMIT) {
     try {
