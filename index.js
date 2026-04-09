@@ -51,12 +51,13 @@ async function handleEvent(event) {
       text: "⚠️ 親の体調が『悪い』と報告されました"
     });
   }
-}
+
 
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
   });
+}
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
