@@ -45,19 +45,18 @@ async function handleEvent(event) {
     replyText = "OK、無理せず安定を意識していこう";
   } else if (userMessage === "3") {
     replyText = "少し心配です。今日はしっかり休むのも戦略です";
-  } 
-
+  // 子供への通知
   await client.pushMessage(CHILD_USER_ID, {
       type: "text",
       text: "⚠️ 親の体調が『悪い』と報告されました"
     });
   }
+}
 
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
   });
-
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
