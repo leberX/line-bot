@@ -32,7 +32,7 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  console.log("アクセス来た");
+  console.log("アクセス");
   res.send('OK');
 });
 
