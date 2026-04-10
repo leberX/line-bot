@@ -1,5 +1,6 @@
 // ===== ライブラリ =====
 const express = require('express');
+console.log("サーバー起動開始");
 const line = require('@line/bot-sdk');
 const cron = require('node-cron');
 require('dotenv').config();
@@ -28,6 +29,11 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
   const events = req.body.events;
   await Promise.all(events.map(handleEvent));
   res.sendStatus(200);
+});
+
+app.get('/', (req, res) => {
+  console.log("アクセス来た");
+  res.send('OK');
 });
 
 // ===== メイン処理 =====
