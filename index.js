@@ -99,8 +99,8 @@ if (!userData[userId]) {
 
 const user = userData[userId];
 
-  // ===== 健康チェック回答 =====
-  if (userMessage === "1" || userMessage === "2") {
+// ===== 健康チェック回答 =====
+if (userMessage === "1" || userMessage === "2") {
 
   const today = getToday();
 
@@ -108,10 +108,9 @@ const user = userData[userId];
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  if (lastReplyDate === today) {
-    // ←ここで止めるのが重要
+  if (user.lastReplyDate === today) {
     replyText = `今日はすでに記録済みです👌
-現在 ${streak} 日連続です。`;
+現在 ${user.streak} 日連続です。`;
 
     return client.replyMessage(event.replyToken, {
       type: "text",
@@ -119,19 +118,26 @@ const user = userData[userId];
     });
   }
 
-  if (lastReplyDate === yesterdayStr) {
-    streak++;
+  if (user.lastReplyDate === yesterdayStr) {
+    user.streak++;
   } else {
-    streak = 1;
+    user.streak = 1;
   }
 
   user.lastReplyDate = today;
-
   saveData();
 
   replyText = `いいですね🔥
-現在 ${streak} 日連続です。`;
-}
+現在 ${user.streak} 日連続です。`;
+
+} else if (userMessage === "3") {
+
+  const today = getToday();
+
+  user.streak = 0;
+  user.lastReplyDate = today;
+
+  saveData();
 
   if (userMessage === "1") {
     streak++;
@@ -144,27 +150,20 @@ const user = userData[userId];
   } else if (userMessage === "3") {
     let streak = 0;
     replyText = "少し心配です。今日はしっかり休みましょうね。";
-  } else if (userMessage === "3") {
-
-  user.streak = 0;
-  user.lastReplyDate = getToday();
-
-  saveData(); // ←これ忘れるな
-
-  replyText = "少し心配です。今日はしっかり休みましょう。";
-} 
+    } 
+  }
   // 子供への通知
   await client.pushMessage(CHILD_USER_ID, {
       type: "text",
       text: "⚠️ 親の体調が『悪い』と報告されました"
     });
-  }
+  
   
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
   });
-  
+}
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
