@@ -169,7 +169,7 @@ cron.schedule('0 9 * * *', async () => {
   }
 });
 // ===== 未返信検知（1時間ごと）=====
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 * * * *', async () => {
 
   const now = Date.now();
   const diff = now - lastReplyTime;
