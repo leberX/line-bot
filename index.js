@@ -39,6 +39,8 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
+  console.log("ユーザーID:", event.source.userId);
+  
   if (event.type !== 'message' || event.message.type !== 'text') {
     return null;
   }
