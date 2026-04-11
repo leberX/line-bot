@@ -2,6 +2,13 @@
 const express = require('express');
 console.log("サーバー起動開始");
 const line = require('@line/bot-sdk');
+let streak = 0;
+let lastReplyDate = null;
+
+function getToday() {
+  const now = new Date();
+  return now.toISOString().split('T')[0];
+}
 const cron = require('node-cron');
 require('dotenv').config();
 
@@ -37,8 +44,6 @@ app.get('/', (req, res) => {
 });
 
 // ===== メイン処理 =====
-let streak = 0;
-
 async function handleEvent(event) {
 
   if (event.type === 'follow') {
