@@ -170,31 +170,28 @@ cron.schedule('0 9 * * *', async () => {
 });
 // ===== 未返信検知（1時間ごと）=====
 cron.schedule('* * * * *', async () => {
-  console.log("⏳ 未返信チェック");
 
   const now = Date.now();
   const diff = now - lastReplyTime;
 
-  console.log("現在時刻:", new Date());
-  console.log("最終返信:", new Date(lastReplyTime));
-  console.log("差分(ms):", diff);
+  const LIMIT = 24 * 60 * 60 * 1000; // 24時間
 
-  // 24時間（ミリ秒）
-  const LIMIT = 24 * 60 * 60 * 1000;
+  const user = userData[PARENT_USER_ID];
 
-  if (diff > LIMIT) {
-    try {
-      await client.pushMessage(CHILD_USER_ID, {
-        type: "text",
-        text: "⚠️ 24時間返信がありません。確認してください。"
-      });
-      console.log("🚨 未返信通知送信");
-    } catch (err) {
-      console.error("❌ 未返信通知失敗", err);
-    }
+  if (diff > LIMIT && !user.notified) {
+
+    await client.pushMessage(CHILD_USER_ID, {
+      type: "text",
+      text: "⚠️ 24時間返信がありません。確認してください。"
+    });
+
+    user.notified = true;
+    saveData();
+
+    console.log("🚨 未返信通知送信(1回のみ)");
   }
 });
-
+  
 // ===== サーバー起動 =====
 const port = process.env.PORT || 3000;
 
