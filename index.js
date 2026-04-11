@@ -37,6 +37,8 @@ app.get('/', (req, res) => {
 });
 
 // ===== メイン処理 =====
+let streak = 0;
+
 async function handleEvent(event) {
 
   if (event.type === 'follow') {
@@ -70,19 +72,23 @@ async function handleEvent(event) {
 
   // ===== 健康チェック回答 =====
   if (userMessage === "1") {
-    replyText = "いいですね🔥 今日もその調子でいきましょう";
+    streak++;
+    replyText =  `いいですね🔥体調がよくてなによりです！
+現在 ${streak} 日連続です。`;
   } else if (userMessage === "2") {
-    replyText = "OK、無理せず安定を意識していこう";
+    streak++;
+    replyText = `無理せず、体調に合わせて過ごしてくださいね
+    現在 ${streak} 日連続です。`;
   } else if (userMessage === "3") {
-    replyText = "少し心配です。今日はしっかり休むのも戦略です";
+    let streak = 0;
+    replyText = "少し心配です。今日はしっかり休みましょうね。";
   // 子供への通知
   await client.pushMessage(CHILD_USER_ID, {
       type: "text",
       text: "⚠️ 親の体調が『悪い』と報告されました"
     });
   }
-
-
+  
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
