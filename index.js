@@ -84,6 +84,9 @@ async function handleEvent(event) {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
+  console.log("today:", today);
+  console.log("lastReplyDate:", lastReplyDate);
+
   if (lastReplyDate === today) {
     // 今日すでに返信 → 何もしない
   } else if (lastReplyDate === yesterdayStr) {
