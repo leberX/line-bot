@@ -79,21 +79,24 @@ async function handleEvent(event) {
 
   const today = getToday();
 
-  // 昨日の日付を作る
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  console.log("today:", today);
-  console.log("lastReplyDate:", lastReplyDate);
-
   if (lastReplyDate === today) {
-    // 今日すでに返信 → 何もしない
-  } else if (lastReplyDate === yesterdayStr) {
-    // 昨日も返信 → 継続
+    // ←ここで止めるのが重要
+    replyText = `今日はすでに記録済みです👌
+現在 ${streak} 日連続です。`;
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: replyText
+    });
+  }
+
+  if (lastReplyDate === yesterdayStr) {
     streak++;
   } else {
-    // 途切れ → リセット
     streak = 1;
   }
 
