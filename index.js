@@ -69,8 +69,31 @@ async function handleEvent(event) {
 
   const userMessage = event.message.text.trim();
   let replyText = "";
-
   // ===== 健康チェック回答 =====
+  if (userMessage === "1" || userMessage === "2") {
+
+  const today = getToday();
+
+  if (lastReplyDate === today) {
+    // 今日すでに返信済み → 何もしない
+  } else if (
+    lastReplyDate &&
+    new Date(today) - new Date(lastReplyDate) === 86400000
+  ) {
+    // 昨日も返信 → 継続
+    streak++;
+  } else {
+    // 途切れた → リセットして1から
+    streak = 1;
+  }
+
+  lastReplyDate = today;
+
+  replyText = `いいですね🔥
+現在 ${streak} 日連続です。`;
+
+}
+
   if (userMessage === "1") {
     streak++;
     replyText =  `いいですね🔥体調がよくてなによりです！
