@@ -11,7 +11,7 @@ function getToday() {
 }
 const cron = require('node-cron');
 require('dotenv').config();
-
+const fs = require('fs');
 // ===== 初期設定 =====
 const app = express();
 
@@ -21,6 +21,19 @@ const config = {
 };
 
 const client = new line.Client(config);
+
+let userData = {};
+
+try {
+  const data = fs.readFileSync('data.json', 'utf-8');
+  userData = JSON.parse(data);
+} catch (e) {
+  userData = {};
+}
+
+function saveData() {
+  fs.writeFileSync('data.json', JSON.stringify(userData, null, 2));
+}
 
 let lastReplyTime = Date.now();
 
@@ -74,6 +87,18 @@ async function handleEvent(event) {
 
   const userMessage = event.message.text.trim();
   let replyText = "";
+
+  const userId = event.source.userId;
+
+if (!userData[userId]) {
+  userData[userId] = {
+    streak: 0,
+    lastReplyDate: null
+  };
+}
+
+const user = userData[userId];
+
   // ===== 健康チェック回答 =====
   if (userMessage === "1" || userMessage === "2") {
 
@@ -100,7 +125,9 @@ async function handleEvent(event) {
     streak = 1;
   }
 
-  lastReplyDate = today;
+  user.lastReplyDate = today;
+
+  saveData();
 
   replyText = `いいですね🔥
 現在 ${streak} 日連続です。`;
@@ -117,6 +144,15 @@ async function handleEvent(event) {
   } else if (userMessage === "3") {
     let streak = 0;
     replyText = "少し心配です。今日はしっかり休みましょうね。";
+  } else if (userMessage === "3") {
+
+  user.streak = 0;
+  user.lastReplyDate = getToday();
+
+  saveData(); // ←これ忘れるな
+
+  replyText = "少し心配です。今日はしっかり休みましょう。";
+} 
   // 子供への通知
   await client.pushMessage(CHILD_USER_ID, {
       type: "text",
@@ -128,7 +164,7 @@ async function handleEvent(event) {
     type: "text",
     text: replyText
   });
-}
+  
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
