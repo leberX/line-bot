@@ -39,6 +39,22 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
+  if (event.type === 'follow') {
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: `このLINEは、あなたの体調を簡単に確認するためのものです。
+
+もし体調が悪い日や、返信がない日が続いた場合、
+ご家族に通知が届く仕組みになっています。
+
+あなたの安心と、ご家族の安心のための仕組みです。
+無理のない範囲で、「1・2・3」で教えてください。`
+    });
+  }
+
+  if (event.type !== 'message' || event.message.type !== 'text') {
+    return null;
+  }
   console.log("ユーザーID:", event.source.userId);
   
   if (event.type !== 'message' || event.message.type !== 'text') {
