@@ -18,7 +18,7 @@ const client = new line.Client(config);
 let lastReplyTime = Date.now();
 
 // 親のuserId
-const PARENT_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
+const PARENT_USER_ID = "U8143d9255c213e11a6132397c684a5ee";
 // 子供のuserId
 const CHILD_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // ===== 起動確認 =====
