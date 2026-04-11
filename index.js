@@ -139,31 +139,14 @@ if (userMessage === "1" || userMessage === "2") {
 
   saveData();
 
-  if (userMessage === "1") {
-    streak++;
-    replyText =  `いいですね🔥体調がよくてなによりです！
-現在 ${streak} 日連続です。`;
-  } else if (userMessage === "2") {
-    streak++;
-    replyText = `無理せず、体調に合わせて過ごしてくださいね
-    現在 ${streak} 日連続です。`;
-  } else if (userMessage === "3") {
-    let streak = 0;
-    replyText = "少し心配です。今日はしっかり休みましょうね。";
-    } 
-}
-  // 子供への通知
+  // 👇 通知はここだけ！！
   await client.pushMessage(CHILD_USER_ID, {
-      type: "text",
-      text: "⚠️ 親の体調が『悪い』と報告されました"
-    });
-  
-  
-  return client.replyMessage(event.replyToken, {
     type: "text",
-    text: replyText
+    text: "⚠️ 親の体調が『悪い』と報告されました"
   });
-}
+
+  replyText = "少し心配です。今日はしっかり休みましょうね。";
+}}
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
