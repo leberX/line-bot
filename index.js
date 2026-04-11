@@ -151,7 +151,7 @@ if (userMessage === "1" || userMessage === "2") {
     let streak = 0;
     replyText = "少し心配です。今日はしっかり休みましょうね。";
     } 
-  }
+}
   // 子供への通知
   await client.pushMessage(CHILD_USER_ID, {
       type: "text",
