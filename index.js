@@ -79,16 +79,18 @@ async function handleEvent(event) {
 
   const today = getToday();
 
+  // 昨日の日付を作る
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+
   if (lastReplyDate === today) {
-    // 今日すでに返信済み → 何もしない
-  } else if (
-    lastReplyDate &&
-    new Date(today) - new Date(lastReplyDate) === 86400000
-  ) {
+    // 今日すでに返信 → 何もしない
+  } else if (lastReplyDate === yesterdayStr) {
     // 昨日も返信 → 継続
     streak++;
   } else {
-    // 途切れた → リセットして1から
+    // 途切れ → リセット
     streak = 1;
   }
 
@@ -96,7 +98,6 @@ async function handleEvent(event) {
 
   replyText = `いいですね🔥
 現在 ${streak} 日連続です。`;
-
 }
 
   if (userMessage === "1") {
