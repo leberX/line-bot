@@ -90,15 +90,29 @@ async function handleEvent(event) {
 
   const userId = event.source.userId;
 
+// 👇 初期化（ここ）
 if (!userData[userId]) {
   userData[userId] = {
     streak: 0,
-    lastReplyDate: null
+    lastReplyDate: null,
+    notified: false
   };
 }
 
+// 👇 user取得（ここ）
 const user = userData[userId];
 
+// 👇 リセット（ここ）
+user.notified = false;
+saveData();
+
+if (!userData[userId]) {
+  userData[userId] = {
+    streak: 0,
+    lastReplyDate: null,
+    notified: false
+  };
+}
 // ===== 健康チェック回答 =====
 if (userMessage === "1" || userMessage === "2") {
 
@@ -169,7 +183,9 @@ cron.schedule('0 9 * * *', async () => {
   }
 });
 // ===== 未返信検知（1時間ごと）=====
-cron.schedule('0 * * * *', async () => {
+cron.schedule('* * * * *', async () => {
+
+  console.log("⏳ 未返信チェック");
 
   const now = Date.now();
   const diff = now - lastReplyTime;
@@ -178,17 +194,28 @@ cron.schedule('0 * * * *', async () => {
 
   const user = userData[PARENT_USER_ID];
 
+  // 👇 これ絶対必要
+  if (!user) {
+    console.log("❌ userが存在しない");
+    return;
+  }
+
   if (diff > LIMIT && !user.notified) {
 
-    await client.pushMessage(CHILD_USER_ID, {
-      type: "text",
-      text: "⚠️ 24時間返信がありません。確認してください。"
-    });
+    try {
+      await client.pushMessage(CHILD_USER_ID, {
+        type: "text",
+        text: "⚠️ 24時間返信がありません。確認してください。"
+      });
 
-    user.notified = true;
-    saveData();
+      user.notified = true;
+      saveData();
 
-    console.log("🚨 未返信通知送信(1回のみ)");
+      console.log("🚨 未返信通知送信（1回のみ）");
+
+    } catch (err) {
+      console.error("❌ 未返信通知失敗", err);
+    }
   }
 });
   
