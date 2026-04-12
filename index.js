@@ -12,6 +12,9 @@ function getToday() {
 const cron = require('node-cron');
 require('dotenv').config();
 const fs = require('fs');
+const path = require('path');
+// 👇 ここ
+const DATA_FILE = path.join(__dirname, 'data.json');
 // ===== 初期設定 =====
 const app = express();
 
@@ -24,6 +27,11 @@ const client = new line.Client(config);
 
 let userData = {};
 
+if (fs.existsSync(DATA_FILE)) {
+  const data = fs.readFileSync(DATA_FILE, 'utf-8');
+  userData = JSON.parse(data);
+}
+
 try {
   const data = fs.readFileSync('data.json', 'utf-8');
   userData = JSON.parse(data);
@@ -32,13 +40,18 @@ try {
 }
 
 function saveData() {
+  try {
   fs.writeFileSync('data.json', JSON.stringify(userData, null, 2));
+console.log("💾 保存成功");
+  } catch (err) {
+    console.error("❌ 保存失敗", err);
+  }
 }
 
 let lastReplyTime = Date.now();
 
 // 親のuserId
-const PARENT_USER_ID = "U8143d9255c213e11a6132397c684a5ee";
+const PARENT_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // 子供のuserId
 const CHILD_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // ===== 起動確認 =====
@@ -219,6 +232,8 @@ cron.schedule('* * * * *', async () => {
   }
 });
   
+ user.notified = true;
+ saveData();
 // ===== サーバー起動 =====
 const port = process.env.PORT || 3000;
 
