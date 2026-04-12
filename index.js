@@ -231,9 +231,6 @@ cron.schedule('* * * * *', async () => {
     }
   }
 });
-  
- user.notified = true;
- saveData();
 // ===== サーバー起動 =====
 const port = process.env.PORT || 3000;
 
