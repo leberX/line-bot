@@ -117,6 +117,7 @@ const user = userData[userId];
 
 // 👇 リセット（ここ）
 user.notified = false;
+lastReplyTime = Date.now();
 saveData();
 
 if (!userData[userId]) {
