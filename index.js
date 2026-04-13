@@ -30,8 +30,6 @@ const config = {
 
 const client = new line.Client(config);
 
-let userData = {};
-
 let lastReplyTime = Date.now();
 
 // 親のuserId
@@ -106,25 +104,6 @@ if (!user) {
   };
 }
 
-// 👇 初期化（ここ）
-if (!userData[userId]) {
-  userData[userId] = {
-    streak: 0,
-    lastReplyDate: null,
-    notified: false
-  };
-}
-// 👇 リセット（ここ）
-user.notified = false;
-lastReplyTime = Date.now();
-
-if (!userData[userId]) {
-  userData[userId] = {
-    streak: 0,
-    lastReplyDate: null,
-    notified: false
-  };
-}
 // ===== 健康チェック回答 =====
 if (userMessage === "1" || userMessage === "2") {
 
@@ -144,13 +123,13 @@ if (userMessage === "1" || userMessage === "2") {
     });
   }
 
-  if (user.lastReplyDate === yesterdayStr) {
+  if (user.last_reply_date === yesterdayStr) {
     user.streak++;
   } else {
     user.streak = 1;
   }
 
-  user.lastReplyDate = today;
+  user.last_reply_date = today;
   
 
   replyText = `いいですね🔥
@@ -180,16 +159,6 @@ await supabase
 
   replyText = "少し心配です。今日はしっかり休みましょうね。";
 }}
-
-await supabase
-  .from('users')
-  .upsert({
-    user_id: user.user_id,
-    streak: user.streak,
-    last_reply_date: user.last_reply_date,
-    notified: user.notified
-  });
-  
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
@@ -220,8 +189,6 @@ cron.schedule('* * * * *', async () => {
   const diff = now - lastReplyTime;
 
   const LIMIT = 24 * 60 * 60 * 1000; // 24時間
-
-  const user = userData[PARENT_USER_ID];
 
   // 👇 これ絶対必要
   if (!user) {
