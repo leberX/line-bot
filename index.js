@@ -13,8 +13,13 @@ const cron = require('node-cron');
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
-// 👇 ここ
-const DATA_FILE = path.join(__dirname, 'data.json');
+
+const { createClient } = require('@supabase/supabase-js');
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 // ===== 初期設定 =====
 const app = express();
 
@@ -26,27 +31,6 @@ const config = {
 const client = new line.Client(config);
 
 let userData = {};
-
-if (fs.existsSync(DATA_FILE)) {
-  const data = fs.readFileSync(DATA_FILE, 'utf-8');
-  userData = JSON.parse(data);
-}
-
-try {
-  const data = fs.readFileSync('data.json', 'utf-8');
-  userData = JSON.parse(data);
-} catch (e) {
-  userData = {};
-}
-
-function saveData() {
-  try {
-  fs.writeFileSync('data.json', JSON.stringify(userData, null, 2));
-console.log("💾 保存成功");
-  } catch (err) {
-    console.error("❌ 保存失敗", err);
-  }
-}
 
 let lastReplyTime = Date.now();
 
@@ -103,6 +87,25 @@ async function handleEvent(event) {
 
   const userId = event.source.userId;
 
+  let { data: user, error } = await supabase
+  .from('users')
+  .select('*')
+  .eq('user_id', userId)
+  .single();
+
+if (error && error.code !== 'PGRST116') {
+  console.error("❌ DB取得エラー", error);
+}
+
+if (!user) {
+  user = {
+    user_id: userId,
+    streak: 0,
+    last_reply_date: null,
+    notified: false
+  };
+}
+
 // 👇 初期化（ここ）
 if (!userData[userId]) {
   userData[userId] = {
@@ -111,14 +114,9 @@ if (!userData[userId]) {
     notified: false
   };
 }
-
-// 👇 user取得（ここ）
-const user = userData[userId];
-
 // 👇 リセット（ここ）
 user.notified = false;
 lastReplyTime = Date.now();
-saveData();
 
 if (!userData[userId]) {
   userData[userId] = {
@@ -153,10 +151,19 @@ if (userMessage === "1" || userMessage === "2") {
   }
 
   user.lastReplyDate = today;
-  saveData();
+  
 
   replyText = `いいですね🔥
 現在 ${user.streak} 日連続です。`;
+
+await supabase
+  .from('users')
+  .upsert({
+    user_id: user.user_id,
+    streak: user.streak,
+    last_reply_date: user.last_reply_date,
+    notified: user.notified
+  });
 
 } else if (userMessage === "3") {
 
@@ -164,8 +171,6 @@ if (userMessage === "1" || userMessage === "2") {
 
   user.streak = 0;
   user.lastReplyDate = today;
-
-  saveData();
 
   // 👇 通知はここだけ！！
   await client.pushMessage(CHILD_USER_ID, {
@@ -175,6 +180,16 @@ if (userMessage === "1" || userMessage === "2") {
 
   replyText = "少し心配です。今日はしっかり休みましょうね。";
 }}
+
+await supabase
+  .from('users')
+  .upsert({
+    user_id: user.user_id,
+    streak: user.streak,
+    last_reply_date: user.last_reply_date,
+    notified: user.notified
+  });
+  
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
@@ -223,7 +238,6 @@ cron.schedule('* * * * *', async () => {
       });
 
       user.notified = true;
-      saveData();
 
       console.log("🚨 未返信通知送信（1回のみ）");
 
