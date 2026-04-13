@@ -91,8 +91,12 @@ async function handleEvent(event) {
   .eq('user_id', userId)
   .single();
 
-if (error && error.code !== 'PGRST116') {
-  console.error("❌ DB取得エラー", error);
+if (error) {
+  if (error.code === 'PGRST116') {
+    console.log("🆕 新規ユーザー");
+  } else {
+    console.error("❌ 本当のDBエラー", error);
+  }
 }
 
 if (!user) {
