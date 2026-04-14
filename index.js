@@ -223,7 +223,7 @@ if (userMessage === "1" || userMessage === "2") {
   user.last_reply_date = today;
   user.notified = false;
 
-  replyText = `いいですね🔥
+  replyText = `いいです🔥
 現在 ${user.streak} 日連続です。`;
 
   // 👇 ここに入れる（超重要）
