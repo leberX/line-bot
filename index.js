@@ -275,6 +275,12 @@ cron.schedule('* * * * *', async () => {
 
   const LIMIT = 24 * 60 * 60 * 1000; // 24時間
 
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('user_id', PARENT_USER_ID)
+    .single();
+
   // 👇 これ絶対必要
   if (!user) {
     console.log("❌ userが存在しない");
