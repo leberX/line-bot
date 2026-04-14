@@ -123,19 +123,19 @@ if (userMessage === "1" || userMessage === "2") {
     console.log("🔥 保存前（重複）", user);
 
     const { data, error } = await supabase
-      .from('users')
-      .upsert({
-        user_id: user.user_id,
-        streak: user.streak,
-        last_reply_date: user.last_reply_date,
-        notified: user.notified
-      });
+  .from('users')
+  .upsert({
+    user_id: user.user_id,
+    streak: user.streak,
+    last_reply_date: user.last_reply_date,
+    notified: user.notified
+  }, { onConflict: 'user_id' });
 
-    if (error) {
-      console.error("❌ 保存エラー", error);
-    } else {
-      console.log("✅ 保存成功", data);
-    }
+if (error) {
+  console.error("❌ 保存エラー詳細", error);
+} else {
+  console.log("✅ 保存成功", data);
+}
 
     replyText = `今日はすでに記録済みです👌
 現在 ${user.streak} 日連続です。`;
