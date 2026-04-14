@@ -266,7 +266,7 @@ cron.schedule('0 9 * * *', async () => {
   }
 });
 // ===== 未返信検知（1時間ごと）=====
-cron.schedule('0 * * * *', async () => {
+cron.schedule('0 */3 * * *', async () => {
 
   console.log("⏳ 未返信チェック");
 
