@@ -117,7 +117,26 @@ if (userMessage === "1" || userMessage === "2") {
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  if (user.lastReplyDate === today) {
+  if (user.last_reply_date === today) {
+
+    // 👇 保存を先にやる
+    console.log("🔥 保存前（重複）", user);
+
+    const { data, error } = await supabase
+      .from('users')
+      .upsert({
+        user_id: user.user_id,
+        streak: user.streak,
+        last_reply_date: user.last_reply_date,
+        notified: user.notified
+      });
+
+    if (error) {
+      console.error("❌ 保存エラー", error);
+    } else {
+      console.log("✅ 保存成功", data);
+    }
+
     replyText = `今日はすでに記録済みです👌
 現在 ${user.streak} 日連続です。`;
 
@@ -134,35 +153,97 @@ if (userMessage === "1" || userMessage === "2") {
   }
 
   user.last_reply_date = today;
-  
+  user.notified = false;
 
   replyText = `いいですね🔥
 現在 ${user.streak} 日連続です。`;
 
-await supabase
-  .from('users')
-  .upsert({
-    user_id: user.user_id,
-    streak: user.streak,
-    last_reply_date: user.last_reply_date,
-    notified: user.notified
-  });
+  // 👇 ここに入れる（超重要）
+  console.log("🔥 保存前", user);
 
-} else if (userMessage === "3") {
+  const { data, error } = await supabase
+    .from('users')
+    .upsert({
+      user_id: user.user_id,
+      streak: user.streak,
+      last_reply_date: user.last_reply_date,
+      notified: user.notified
+    });
+
+  if (error) {
+    console.error("❌ 保存エラー", error);
+  } else {
+    console.log("✅ 保存成功", data);
+  }
+}
+
+if (userMessage === "1" || userMessage === "2") {
 
   const today = getToday();
 
-  user.streak = 0;
-  user.lastReplyDate = today;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  // 👇 通知はここだけ！！
-  await client.pushMessage(CHILD_USER_ID, {
-    type: "text",
-    text: "⚠️ 親の体調が『悪い』と報告されました"
-  });
+  if (user.last_reply_date === today) {
 
-  replyText = "少し心配です。今日はしっかり休みましょうね。";
-}}
+    // 👇 保存を先にやる
+    console.log("🔥 保存前（重複）", user);
+
+    const { data, error } = await supabase
+      .from('users')
+      .upsert({
+        user_id: user.user_id,
+        streak: user.streak,
+        last_reply_date: user.last_reply_date,
+        notified: user.notified
+      });
+
+    if (error) {
+      console.error("❌ 保存エラー", error);
+    } else {
+      console.log("✅ 保存成功", data);
+    }
+
+    replyText = `今日はすでに記録済みです👌
+現在 ${user.streak} 日連続です。`;
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: replyText
+    });
+  }
+
+  if (user.last_reply_date === yesterdayStr) {
+    user.streak++;
+  } else {
+    user.streak = 1;
+  }
+
+  user.last_reply_date = today;
+  user.notified = false;
+
+  replyText = `いいですね🔥
+現在 ${user.streak} 日連続です。`;
+
+  // 👇 ここに入れる（超重要）
+  console.log("🔥 保存前", user);
+
+  const { data, error } = await supabase
+    .from('users')
+    .upsert({
+      user_id: user.user_id,
+      streak: user.streak,
+      last_reply_date: user.last_reply_date,
+      notified: user.notified
+    });
+
+  if (error) {
+    console.error("❌ 保存エラー", error);
+  } else {
+    console.log("✅ 保存成功", data);
+  }
+  }}
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
@@ -210,7 +291,7 @@ cron.schedule('* * * * *', async () => {
 
       user.notified = true;
 
-      console.log("🚨 未返信通知送信（1回のみ）");
+      console.log("🚨 未返信通知送信(1回のみ)");
 
     } catch (err) {
       console.error("❌ 未返信通知失敗", err);
