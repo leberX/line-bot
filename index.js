@@ -109,42 +109,24 @@ if (!user) {
 }
 
 // ===== 健康チェック回答 =====
-if (userMessage === "1" || userMessage === "2") {
+// ===== 健康チェック回答 =====
+if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 
   const today = getToday();
 
+  // 👇 すでに今日記録済みなら終了
+  if (user.last_reply_date === today) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: `今日はすでに記録済みです👌
+現在 ${user.streak} 日連続です。`
+    });
+  }
+
+  // 👇 昨日チェック
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-  if (user.last_reply_date === today) {
-
-    // 👇 保存を先にやる
-    console.log("🔥 保存前（重複）", user);
-
-    const { data, error } = await supabase
-  .from('users')
-  .upsert({
-    user_id: user.user_id,
-    streak: user.streak,
-    last_reply_date: user.last_reply_date,
-    notified: user.notified
-  }, { onConflict: 'user_id' });
-
-if (error) {
-  console.error("❌ 保存エラー詳細", error);
-} else {
-  console.log("✅ 保存成功", data);
-}
-
-    replyText = `今日はすでに記録済みです👌
-現在 ${user.streak} 日連続です。`;
-
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: replyText
-    });
-  }
 
   if (user.last_reply_date === yesterdayStr) {
     user.streak++;
@@ -153,28 +135,53 @@ if (error) {
   }
 
   user.last_reply_date = today;
-  user.notified = false;
 
-  replyText = `いいですね🔥
+  // ===== 体調ごとの処理 =====
+  let replyText = "";
+
+  if (userMessage === "1") {
+    replyText = `最高だな🔥
 現在 ${user.streak} 日連続です。`;
 
-  // 👇 ここに入れる（超重要）
-  console.log("🔥 保存前", user);
+  } else if (userMessage === "2") {
+    replyText = `いい感じだ👌
+現在 ${user.streak} 日連続です。`;
 
-  const { data, error } = await supabase
+  } else if (userMessage === "3") {
+
+    user.streak = 0;
+
+    replyText = `少し心配だな。
+今日はしっかり休め。`;
+
+    // 👇 子供に通知
+    await client.pushMessage(CHILD_USER_ID, {
+      type: "text",
+      text: "⚠️ 親の体調が『悪い』と報告されました"
+    });
+  }
+
+  // 👇 DB保存（ここ超重要）
+  const { error: saveError } = await supabase
     .from('users')
     .upsert({
       user_id: user.user_id,
       streak: user.streak,
       last_reply_date: user.last_reply_date,
-      notified: user.notified
+      notified: false
     });
 
-  if (error) {
-    console.error("❌ 保存エラー", error);
+  if (saveError) {
+    console.error("❌ 保存エラー", saveError);
   } else {
-    console.log("✅ 保存成功", data);
+    console.log("✅ 保存成功");
   }
+
+  // 👇 返信
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: replyText
+  });
 }
 
 if (userMessage === "1" || userMessage === "2") {
