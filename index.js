@@ -109,7 +109,6 @@ if (!user) {
 }
 
 // ===== 健康チェック回答 =====
-// ===== 健康チェック回答 =====
 if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 
   const today = getToday();
