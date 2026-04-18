@@ -326,23 +326,26 @@ cron.schedule('0 */3 * * *', async () => {
     return;
   }
 
+  try{
+
   if (diff > LIMIT && !user.notified) {
 
-    try {
-      await client.pushMessage(CHILD_USER_ID, {
-        type: "text",
-        text: "⚠️ 24時間返信がありません。確認してください。"
-      });
-
+    if (child) {
+  await client.pushMessage(child.user_id, {
+    type: "text",
+    text: "⚠️ 24時間返信がありません。確認してください。"
+  });
+}
       user.notified = true;
 
       console.log("🚨 未返信通知送信(1回のみ)");
+}
 
     } catch (err) {
       console.error("❌ 未返信通知失敗", err);
     }
   }
-});
+);
 // ===== サーバー起動 =====
 const port = process.env.PORT || 3000;
 
