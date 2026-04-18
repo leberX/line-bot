@@ -32,10 +32,6 @@ const client = new line.Client(config);
 
 let lastReplyTime = Date.now();
 
-// 親のuserId
-const PARENT_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
-// 子供のuserId
-const CHILD_USER_ID = "Ucf5eea1d586f6afb69cccfd8248c2d75";
 // ===== 起動確認 =====
 console.log("=== 健康チェックBot 起動 ===");
 
@@ -84,6 +80,7 @@ async function handleEvent(event) {
   let replyText = "";
 
   const userId = event.source.userId;
+  console.log("userId:", userId);
 
   let { data: user, error } = await supabase
   .from('users')
@@ -235,14 +232,20 @@ if (userMessage === "1" || userMessage === "2") {
   // 👇 ここに入れる（超重要）
   console.log("🔥 保存前", user);
 
-  const { data, error } = await supabase
-    .from('users')
-    .upsert({
-      user_id: user.user_id,
-      streak: user.streak,
-      last_reply_date: user.last_reply_date,
-      notified: user.notified
-    });
+ const { data, error } = await supabase
+  .from("users")
+  .upsert({
+    user_id: userId,
+    role: user.role,
+    parent_id: user.parent_id,
+    streak: user.streak,
+    last_reply_date: user.last_reply_date,
+    notified: user.notified
+  })
+  .select();
+
+console.log("💾 data:", data);
+console.log("💾 error:", error);
 
   if (error) {
     console.error("❌ 保存エラー", error);
@@ -284,8 +287,30 @@ cron.schedule('0 */3 * * *', async () => {
   const { data: user, error } = await supabase
     .from('users')
     .select('*')
-    .eq('user_id', PARENT_USER_ID)
+    .eq('user_id', userId)
     .single();
+
+    if (!user) {
+  const { error: insertError } = await supabase
+    .from("users")
+    .insert({
+      user_id: userId,
+      role: null,
+      streak: 0,
+      last_reply_date: null,
+      notified: false
+    });
+
+  console.log("🧨 insert error:", insertError);
+
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: "あなたは親ですか？子ですか？\n「1:親」「2:子」で答えてください"
+  });
+}
+
+    console.log("DB user:", user)
+    console.log("DB error:", error)
 
   // 👇 これ絶対必要
   if (!user) {
