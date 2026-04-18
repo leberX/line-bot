@@ -266,7 +266,7 @@ cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
 
   try {
-    await client.pushMessage(PARENT_USER_ID, {
+    await client.pushMessage(user.user_id, {
       type: "text",
       text: `おはようございます☀️
 
@@ -333,7 +333,7 @@ cron.schedule('0 */3 * * *', async () => {
     if (child) {
   await client.pushMessage(child.user_id, {
     type: "text",
-    text: "⚠️ 24時間返信がありません。確認してください。"
+    text: "⚠️ 24時間返信がないみたいです"
   });
 }
       user.notified = true;
