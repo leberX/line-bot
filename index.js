@@ -143,19 +143,27 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     replyText = `いい感じだ👌
 現在 ${user.streak} 日連続です。`;
 
-  } else if (userMessage === "3") {
+  } 
 
-    user.streak = 0;
+  if (userMessage === "3") {
 
-    replyText = `少し心配だな。
-今日はしっかり休め。`;
+  user.streak = 0;
 
-    // 👇 子供に通知
-    await client.pushMessage(CHILD_USER_ID, {
+  // 👇 子（通知先）を取得
+  const { data: child } = await supabase
+    .from("users")
+    .select("*")
+    .eq("parent_id", user.user_id) // ← 親のIDに紐づく子
+    .eq("role", "child")
+    .single();
+
+  if (child) {
+    await client.pushMessage(child.user_id, {
       type: "text",
-      text: "⚠️ 親の体調が『悪い』と報告されました"
+      text: "⚠️ 親の体調が悪いと報告されました"
     });
   }
+}
 
   // 👇 DB保存（ここ超重要）
   const { error: saveError } = await supabase
