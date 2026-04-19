@@ -72,6 +72,58 @@ async function handleEvent(event) {
     return null;
   }
 
+  // =========================
+  // ① 親：コード発行
+  // =========================
+  if (text === "連携") {
+
+    const code = Math.random().toString(36).substring(2, 8);
+
+    await supabase
+      .from("users")
+      .update({ link_code: code })
+      .eq("user_id", userId);
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: " このコードを子に送ってください👇\n\n${code}"
+    });
+  }
+
+  // =========================
+  // ② 子：コード入力
+  // =========================
+  if (text.startsWith("コード ")) {
+
+    const code = text.replace("コード ", "");
+
+    const { data: parent } = await supabase
+      .from("users")
+      .select("*")
+      .eq("link_code", code)
+      .single();
+
+    if (!parent) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "❌ コードが間違っています"
+      });
+    }
+
+    await supabase
+      .from("users")
+      .update({
+        parent_id: parent.user_id,
+        role: "child"
+      })
+      .eq("user_id", userId);
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "✅ 連携完了しました"
+    });
+  }
+
   lastReplyTime = Date.now();
 
   let notified = false;
