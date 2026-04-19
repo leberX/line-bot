@@ -198,9 +198,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     replyText = `いい感じだ👌
 現在 ${user.streak} 日連続です。`;
 
-  } 
-
-  if (userMessage === "3") {
+  }  else if (userMessage === "3") {
 
   user.streak = 0;
 
