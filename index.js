@@ -66,11 +66,10 @@ async function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
     return null;
   }
-  console.log("ユーザーID:", event.source.userId);
-  
-  if (event.type !== 'message' || event.message.type !== 'text') {
-    return null;
-  }
+
+  const userId = event.source.userId;
+  console.log("userId:", userId);
+  const text = event.message.text.trim();
 
   // =========================
   // ① 親：コード発行
@@ -86,7 +85,7 @@ async function handleEvent(event) {
 
     return client.replyMessage(event.replyToken, {
       type: "text",
-      text: " このコードを子に送ってください👇\n\n${code}"
+      text: `このコードを子に送ってください👇\n\n${code}`
     });
   }
 
@@ -131,8 +130,7 @@ async function handleEvent(event) {
   const userMessage = event.message.text.trim();
   let replyText = "";
 
-  const userId = event.source.userId;
-  console.log("userId:", userId);
+  
 
   let { data: user, error } = await supabase
   .from('users')
