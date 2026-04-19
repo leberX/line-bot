@@ -92,36 +92,41 @@ async function handleEvent(event) {
   // =========================
   // ② 子：コード入力
   // =========================
-  if (text.startsWith("コード ")) {
+if (text.includes("コード")) {
 
-    const code = text.replace("コード ", "");
+  const code = text.replace("コード", "").trim();
 
-    const { data: parent } = await supabase
-      .from("users")
-      .select("*")
-      .eq("link_code", code)
-      .single();
+  console.log("入力コード:", code);
 
-    if (!parent) {
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: "❌ コードが間違っています"
-      });
-    }
+  const { data: parent, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("link_code", code)
+    .single();
 
-    await supabase
-      .from("users")
-      .update({
-        parent_id: parent.user_id,
-        role: "child"
-      })
-      .eq("user_id", userId);
+  console.log("parent:", parent);
+  console.log("error:", error);
 
+  if (!parent) {
     return client.replyMessage(event.replyToken, {
       type: "text",
-      text: "✅ 連携完了しました"
+      text: "❌ コードが間違っています"
     });
   }
+
+  await supabase
+    .from("users")
+    .update({
+      parent_id: parent.user_id,
+      role: "child"
+    })
+    .eq("user_id", userId);
+
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: "✅ 連携完了しました"
+  });
+}
 
   lastReplyTime = Date.now();
 
