@@ -203,15 +203,15 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   user.streak = 0;
 
   // 👇 子（通知先）を取得
-  const { data: child } = await supabase
+  const { data: userId } = await supabase
     .from("users")
     .select("*")
     .eq("parent_id", user.user_id) // ← 親のIDに紐づく子
-    .eq("role", "child")
+    .eq("role", "userId")
     .single();
 
   if (child) {
-    await client.pushMessage(child.user_id, {
+    await client.pushMessage(user.user_id, {
       type: "text",
       text: "⚠️ 親の体調が悪いと報告されました"
     });
