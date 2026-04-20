@@ -241,7 +241,6 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     .select("*")
     .eq("parent_id", userId)
     .eq("role", "child")
-    .single();
 
   console.log("child:", child);
   console.log("error:", error);
