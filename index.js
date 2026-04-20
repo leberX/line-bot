@@ -248,6 +248,11 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   console.log("親ID:", userId);
   console.log("child:", child);
 
+  if (child && child.user_id === userId) {
+  console.log("⚠️ 自分に送ろうとしてるので停止");
+  return;
+}
+
   if (child) {
     await client.pushMessage(child.user_id, {
       type: "text",
