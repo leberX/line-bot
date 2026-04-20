@@ -199,7 +199,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   const today = getToday();
 
   // 👇 すでに今日記録済みなら終了
-  if (user.last_reply_date === today) {
+  if (user.last_reply_date === today && userMessage !== "3") {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: `今日はすでに記録済みです👌
