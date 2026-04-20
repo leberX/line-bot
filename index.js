@@ -52,6 +52,9 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
+  console.log("handleEvent Success",event.type
+  );
+
   if (event.type === 'follow') {
     return client.replyMessage(event.replyToken, {
       type: 'text',
