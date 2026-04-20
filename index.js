@@ -37,6 +37,8 @@ console.log("=== 健康チェックBot 起動 ===");
 
 // ===== Webhook（返信処理）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
+  console.log("webhook通過");
+
   const events = req.body.events;
   await Promise.all(events.map(handleEvent));
   res.sendStatus(200);
