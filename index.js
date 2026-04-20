@@ -239,12 +239,14 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   const { data: child, error } = await supabase
     .from("users")
     .select("*")
-    .eq("parent_id", user.user_id)
+    .eq("parent_id", userId)
     .eq("role", "child")
     .single();
 
   console.log("child:", child);
   console.log("error:", error);
+  console.log("親ID:", userId);
+  console.log("child:", child);
 
   if (child) {
     await client.pushMessage(child.user_id, {
