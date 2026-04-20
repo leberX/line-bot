@@ -235,6 +235,12 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 
   user.streak = 0;
 
+   const { data: parent } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", user.parent_id) // ← ここ重要
+    .single();
+    
   // 👇 子を取得
   const { data: child, error } = await supabase
     .from("users")
