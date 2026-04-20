@@ -80,6 +80,8 @@ async function handleEvent(event) {
     user_id: userId,
     streak: 0,
     notified: false
+  }, {
+    onConflict: 'user_id'
   });
   
   console.log("userId:", userId);
@@ -258,7 +260,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   const { error: saveError } = await supabase
     .from('users')
     .upsert({
-      user_id: user.user_id,
+      user_id: userId,
       streak: user.streak,
       last_reply_date: user.last_reply_date,
       notified: false
@@ -295,10 +297,12 @@ if (userMessage === "1" || userMessage === "2") {
     const { data, error } = await supabase
       .from('users')
       .upsert({
-        user_id: user.user_id,
+        user_id: userId,
         streak: user.streak,
         last_reply_date: user.last_reply_date,
         notified: user.notified
+      }, {
+        onConflict: 'user_id'
       });
 
     if (error) {
@@ -340,6 +344,8 @@ if (userMessage === "1" || userMessage === "2") {
     streak: user.streak,
     last_reply_date: user.last_reply_date,
     notified: user.notified
+  }, {
+    onConflict: 'user_id'
   })
   .select();
 
