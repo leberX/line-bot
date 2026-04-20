@@ -262,7 +262,9 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       streak: user.streak,
       last_reply_date: user.last_reply_date,
       notified: false
-    });
+     }, {
+  onConflict: 'user_id',
+   });
 
   if (saveError) {
     console.error("❌ 保存エラー", saveError);
