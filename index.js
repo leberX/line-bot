@@ -143,6 +143,23 @@ if (text.includes("コード")) {
   .eq('user_id', userId)
   .single();
 
+  // 👇 ユーザーが存在しなければ作る
+if (!user) {
+  const { error: insertError } = await supabase
+    .from('users')
+    .insert({
+      user_id: userId,
+      streak: 0,
+      notified: false
+    });
+
+  if (insertError) {
+    console.error("❌ 初回登録エラー", insertError);
+  } else {
+    console.log("✅ 新規ユーザー作成");
+  }
+}
+
 if (error) {
   if (error.code === 'PGRST116') {
     console.log("🆕 新規ユーザー");
