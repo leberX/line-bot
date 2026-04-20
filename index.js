@@ -254,9 +254,9 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 }
 
   if (child) {
-    await client.pushMessage(child.user_id, {
+    await client.pushMessage(userId, {
       type: "text",
-      text: "⚠️ 親の体調が悪いと報告されました"
+      text: "⚠️ 親の体調が悪いと報告されました (test)"
     });
   }
 
