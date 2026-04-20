@@ -253,12 +253,26 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   return;
 }
 
-  if (child) {
-    await client.pushMessage(userId, {
-      type: "text",
-      text: "⚠️ 親の体調が悪いと報告されました (test)"
-    });
-  }
+if (!child) {
+  console.log("⚠️ 子が見つからない（通知スキップ）");
+  return;
+}
+
+  try {
+  const res = await client.pushMessage(child.user_id, {
+    type: "text",
+    text: "⚠️ 親の体調が悪いと報告されました"
+  });
+
+  console.log("✅ 通知送信成功", res);
+
+} catch (err) {
+  console.error("❌ 通知送信失敗");
+
+  console.error("送信先ID:", child?.user_id);
+  console.error("エラー内容:", err?.message);
+  console.error("詳細:", err);
+}
 
   replyText = "少し心配です。今日はゆっくり休んでください。";
 }
