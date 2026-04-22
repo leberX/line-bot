@@ -234,39 +234,32 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   }  else if (userMessage === "3") {
 
   user.streak = 0;
-    
-  // 👇 子を取得
+
+  // 👇 ここから差し替え
   const { data: child, error } = await supabase
     .from("users")
-    .select("*")
+    .select("user_id, parent_id, role")
     .eq("parent_id", userId)
     .eq("role", "child")
 
   console.log("child:", child);
   console.log("error:", error);
-  console.log("親ID:", userId);
-  console.log("child:", child);
 
-  if (child && child.user_id === userId) {
-  console.log("⚠️ 自分に送ろうとしてるので停止");
-  return;
-}
+  if (!child || !child.user_id) {
+    console.log("❌ 子が存在しない or user_idなし");
+  } else {
+    try {
+      await client.pushMessage(child.user_id, {
+        type: "text",
+        text: "⚠️ 親の体調が悪いと報告されました"
+      });
 
-if (!child) {
-  console.log("⚠️ 子が見つからない（通知スキップ）");
-  return;
-}
+      console.log("✅ 送信成功");
 
-  try {
-  const res = await client.pushMessage(child.user_id, {
-    type: "text",
-    text: "⚠️ 親の体調が悪いと報告されました"
-  });
-
-  console.log("✅ 通知送信成功", res);
-
-} catch (err) {
-  console.error("❌ 通知送信失敗");
+    } catch (e) {
+      console.error("❌ 送信失敗", e.response?.data || e);
+    }
+  }
 
   console.error("送信先ID:", child?.user_id);
   console.error("エラー内容:", err?.message);
@@ -377,7 +370,7 @@ console.log("💾 error:", error);
   } else {
     console.log("✅ 保存成功", data);
   }
-  }}
+  }
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
