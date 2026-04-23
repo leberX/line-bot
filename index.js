@@ -240,7 +240,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     .from("users")
     .select("user_id, parent_id, role")
     .eq("parent_id", userId)
-    .eq("role", "child")
+      .eq("role", "child")
 
   console.log("child:", child);
   console.log("error:", error);
@@ -287,14 +287,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     console.log("✅ 保存成功");
   }
 
-  // 👇 返信
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: replyText
-  });
-}
-
-if (userMessage === "1" || userMessage === "2") {
+  if (userMessage === "1" || userMessage === "2") {
 
   const today = getToday();
 
@@ -369,8 +362,14 @@ console.log("💾 error:", error);
     console.error("❌ 保存エラー", error);
   } else {
     console.log("✅ 保存成功", data);
-  }
-  }
+  }}
+
+  // 👇 返信
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: replyText
+  });
+}
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
