@@ -198,31 +198,21 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 
   const today = getToday();
 
-  // 👇 すでに今日記録済みなら終了
-  if (user.last_reply_date === today && userMessage !== "3") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: `今日はすでに記録済みです👌
-現在 ${user.streak} 日連続です。`
-    });
-  }
-
-  // 👇 昨日チェック
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayStr = yesterday.toISOString().split('T')[0];
 
+  // ===== ストリーク計算 =====
   if (user.last_reply_date === yesterdayStr) {
     user.streak++;
-  } else {
+  } else if (user.last_reply_date !== today) {
     user.streak = 1;
   }
+  // 👆 今日すでに送ってる場合は何も変えない（でも処理は通す）
 
   user.last_reply_date = today;
 
   // ===== 体調ごとの処理 =====
-  let replyText = "";
-
   if (userMessage === "1") {
     replyText = `最高だな🔥
 現在 ${user.streak} 日連続です。`;
@@ -231,45 +221,40 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     replyText = `いい感じだ👌
 現在 ${user.streak} 日連続です。`;
 
-  }  else if (userMessage === "3") {
+  } else if (userMessage === "3") {
 
-  user.streak = 0;
+    user.streak = 0;
 
-  // 👇 ここから差し替え
-  const { data: child, error } = await supabase
-    .from("users")
-    .select("user_id, parent_id, role")
-    .eq("parent_id", userId)
-      .eq("role", "child")
+    // 👇 子を取得（配列になる）
+    const { data: children, error } = await supabase
+      .from("users")
+      .select("user_id")
+      .eq("parent_id", userId)
+      .eq("role", "child");
 
-  console.log("child:", child);
-  console.log("error:", error);
+    console.log("children:", children);
+    console.log("error:", error);
 
-  if (!child || !child.user_id) {
-    console.log("❌ 子が存在しない or user_idなし");
-  } else {
-    try {
-      await client.pushMessage(child.user_id, {
-        type: "text",
-        text: "⚠️ 親の体調が悪いと報告されました"
-      });
+    if (!children || children.length === 0) {
+      console.log("❌ 子がいない");
+    } else {
+      try {
+        await client.pushMessage(children[0].user_id, {
+          type: "text",
+          text: "⚠️ 親の体調が悪いと報告されました"
+        });
 
-      console.log("✅ 送信成功");
+        console.log("✅ 通知成功");
 
-    } catch (e) {
-      console.error("❌ 送信失敗", e.response?.data || e);
+      } catch (err) {
+        console.error("❌ 通知失敗", err.response?.data || err);
+      }
     }
+
+    replyText = "少し心配です。今日はゆっくり休んでください。";
   }
 
-  console.error("送信先ID:", child?.user_id);
-  console.error("エラー内容:", err?.message);
-  console.error("詳細:", err);
-}
-
-  replyText = "少し心配です。今日はゆっくり休んでください。";
-}
-
-  // 👇 DB保存（ここ超重要）
+  // ===== DB保存 =====
   const { error: saveError } = await supabase
     .from('users')
     .upsert({
@@ -277,53 +262,14 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       streak: user.streak,
       last_reply_date: user.last_reply_date,
       notified: false
-     }, {
-  onConflict: 'user_id',
-   });
+    }, {
+      onConflict: 'user_id'
+    });
 
   if (saveError) {
     console.error("❌ 保存エラー", saveError);
   } else {
     console.log("✅ 保存成功");
-  }
-
-  if (userMessage === "1" || userMessage === "2") {
-
-  const today = getToday();
-
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-  if (user.last_reply_date === today) {
-
-    // 👇 保存を先にやる
-    console.log("🔥 保存前（重複）", user);
-
-    const { data, error } = await supabase
-      .from('users')
-      .upsert({
-        user_id: userId,
-        streak: user.streak,
-        last_reply_date: user.last_reply_date,
-        notified: user.notified
-      }, {
-        onConflict: 'user_id'
-      });
-
-    if (error) {
-      console.error("❌ 保存エラー", error);
-    } else {
-      console.log("✅ 保存成功", data);
-    }
-
-    replyText = `今日はすでに記録済みです👌
-現在 ${user.streak} 日連続です。`;
-
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: replyText
-    });
   }
 
   if (user.last_reply_date === yesterdayStr) {
