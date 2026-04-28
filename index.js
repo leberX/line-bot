@@ -281,9 +281,6 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
   user.last_reply_date = today;
   user.notified = false;
 
-  replyText = `いいです🔥
-現在 ${user.streak} 日連続です。`;
-
   // 👇 ここに入れる（超重要）
   console.log("🔥 保存前", user);
 
