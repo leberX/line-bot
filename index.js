@@ -249,8 +249,8 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       }
     }
 
-    replyText = `少し心配です。今日はゆっくり休んでください。
-    現在 ${user.streak} 日連続です。`;
+    replyText = `少し心配です。今日はゆっくり休んでくださいね💦
+  現在 ${user.streak} 日連続です。`;
   }
 
   // ===== DB保存 =====
