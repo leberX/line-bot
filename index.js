@@ -223,8 +223,6 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
 
   } else if (userMessage === "3") {
 
-    user.streak = 0;
-
     // 👇 子を取得（配列になる）
     const { data: children, error } = await supabase
       .from("users")
@@ -251,7 +249,8 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       }
     }
 
-    replyText = "少し心配です。今日はゆっくり休んでください。";
+    replyText = `少し心配です。今日はゆっくり休んでください。
+    現在 ${user.streak} 日連続です。`;
   }
 
   // ===== DB保存 =====
@@ -313,6 +312,7 @@ console.log("💾 error:", error);
     text: replyText
   });
 }
+
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
@@ -361,7 +361,8 @@ cron.schedule('0 */3 * * *', async () => {
       notified: false
     });
 
-  console.log("🧨 insert error:", insertError);
+
+    console.log("🧨 insert error:", insertError);
 
   return client.replyMessage(event.replyToken, {
     type: "text",
