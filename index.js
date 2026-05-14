@@ -353,7 +353,6 @@ cron.schedule('0 */3 * * *', async () => {
   const { data: user, error } = await supabase
     .from('users')
     .select('*')
-    .eq('user_id', userId)
     .single();
 
     if (!user) {
