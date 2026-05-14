@@ -237,7 +237,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       console.log("❌ 子がいない");
     } else {
       try {
-        await client.pushMessage(children[0].user_id, {
+        await client.pushMessage(user.parent_id, {
           type: "text",
           text: "⚠️ 親の体調が悪いと報告されました"
         });
