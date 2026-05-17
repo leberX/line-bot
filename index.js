@@ -87,54 +87,41 @@ async function handleEvent(event) {
   console.log("userId:", userId);
   const text = event.message.text.trim();
 
-  // =========================
-  // ① 親：コード発行
-  // =========================
-  if (text === "連携") {
-
-    const code = Math.random().toString(36).substring(2, 8);
-
-    await supabase
-      .from("users")
-      .update({ link_code: code })
-      .eq("user_id", userId);
-
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: `このコードを子に送ってください👇\n\n${code}`
-    });
-  }
-
-  // =========================
-  // ② 子：コード入力
-  // =========================
-if (text.includes("コード")) {
+  if (text.includes("コード")) {
 
   const code = text.replace("コード", "").trim();
 
   console.log("入力コード:", code);
 
-  const { data: parent, error } = await supabase
+  const { data: child, error } = await supabase
     .from("users")
     .select("*")
     .eq("link_code", code)
     .single();
 
-  console.log("parent:", parent);
+  console.log("child:", child);
   console.log("error:", error);
 
-  if (!parent) {
+  if (!child) {
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "❌ コードが間違っています"
     });
   }
 
+  // 👇 子に親IDを登録
   await supabase
     .from("users")
     .update({
-      parent_id: parent.user_id,
-      role: "child"
+      parent_id: userId
+    })
+    .eq("user_id", child.user_id);
+
+  // 👇 入力した側を親にする
+  await supabase
+    .from("users")
+    .update({
+      role: "parent"
     })
     .eq("user_id", userId);
 
@@ -236,6 +223,9 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
     if (!children || children.length === 0) {
       console.log("❌ 子がいない");
     } else {
+
+      const child = children[0];
+
       try {
         await client.pushMessage(user.parent_id, {
           type: "text",
