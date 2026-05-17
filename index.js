@@ -87,6 +87,24 @@ async function handleEvent(event) {
   console.log("userId:", userId);
   const text = event.message.text.trim();
 
+  if (text === "連携") {
+
+  const code = Math.random().toString(36).substring(2, 8);
+
+  await supabase
+    .from("users")
+    .update({
+      link_code: code,
+      role: "child"
+    })
+    .eq("user_id", userId);
+
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: `このコードを親に送ってください👇\n\n${code}`
+  });
+}
+
   if (text.includes("コード")) {
 
   const code = text.replace("コード", "").trim();
