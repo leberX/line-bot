@@ -89,7 +89,11 @@ async function handleEvent(event) {
 
   if (text === "連携") {
 
-  const code = Math.random().toString(36).substring(2, 8);
+  const code = Math.random()
+  .toString(36)
+  .substring(2, 8);
+
+  console.log("生成コード：",code);
 
   await supabase
     .from("users")
