@@ -105,9 +105,9 @@ async function handleEvent(event) {
   });
 }
 
-  if (text.includes("コード")) {
+  if (text.length === 6) {
 
-  const code = text.replace("コード", "").trim();
+    const code = text.trim();
 
   console.log("入力コード:", code);
 
