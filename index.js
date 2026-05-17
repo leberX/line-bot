@@ -122,7 +122,6 @@ async function handleEvent(event) {
     .single();
 
   console.log("child:", child);
-  console.log("error:", error);
 
   if (!child) {
     return client.replyMessage(event.replyToken, {
@@ -240,7 +239,7 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       .eq("role", "child");
 
     console.log("children:", children);
-    console.log("error:", error);
+   
 
     if (!children || children.length === 0) {
       console.log("❌ 子がいない");
