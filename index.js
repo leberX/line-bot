@@ -15,7 +15,6 @@ const fs = require('fs');
 const path = require('path');
 
 const { createClient } = require('@supabase/supabase-js');
-const { use } = require('react');
 const { type } = require('os');
 
 const supabase = createClient(
@@ -85,14 +84,14 @@ async function handleEvent(event) {
   }, {
     onConflict: 'user_id'
   });
-  
+
   console.log("userId:", userId);
   const text = event.message.text.trim();
 
   if (text === "連携") {
 
     if (user.role === "parent") {
-      return cilent.replyMessage(event.replyToken, {
+      return client.replyMessage(event.replyToken, {
         type:"text",
         text:"あなたは既に親として登録されています。"
       });
