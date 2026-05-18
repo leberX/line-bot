@@ -249,6 +249,9 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
       const child = children[0];
 
       try {
+
+console.log("送信先：", child?.user_id)
+
         await client.pushMessage(user.parent_id, {
           type: "text",
           text: "⚠️ 親の体調が悪いと報告されました"
