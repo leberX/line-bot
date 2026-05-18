@@ -110,13 +110,6 @@ async function handleEvent(event) {
   });
 }
 
- if (user.role === "parent") {
-      return client.replyMessage(event.replyToken, {
-        type:"text",
-        text:"あなたは既に親として登録されています。"
-      });
-    }
-
   if (text.length === 6) {
 
     const code = text.trim();
