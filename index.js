@@ -254,6 +254,8 @@ if (userMessage === "1" || userMessage === "2" || userMessage === "3") {
           text: "⚠️ 親の体調が悪いと報告されました"
         });
 
+        console.log("処理通過")
+
         console.log("✅ 通知成功");
 
       } catch (err) {
