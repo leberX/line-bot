@@ -257,17 +257,10 @@ console.log("送信先：", child?.user_id)
           text: "⚠️ 親の体調が悪いと報告されました"
         });
 
-        console.log("処理通過")
-
-        console.log("✅ 通知成功");
-
-      } catch (err) {
-        console.error("❌ 通知失敗", err.response?.data || err);
-      }
-    }
-
     replyText = `少し心配です。今日はゆっくり休んでくださいね💦
   現在 ${user.streak} 日連続です。`;
+  } catch (err) {
+    console.error("通知失敗",err);
   }
 
   // ===== DB保存 =====
@@ -334,7 +327,7 @@ console.log("💾 error:", error);
     type: "text",
     text: replyText
   });
-}
+}}}
 
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
