@@ -341,7 +341,7 @@ cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
 
   try {
-    await client.pushMessage(user.user_id, {
+    await client.pushMessage(user.parent_id, {
       type: "text",
       text: `おはようございます☀️
 
