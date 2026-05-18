@@ -90,13 +90,6 @@ async function handleEvent(event) {
 
   if (text === "連携") {
 
-    if (user.role === "parent") {
-      return client.replyMessage(event.replyToken, {
-        type:"text",
-        text:"あなたは既に親として登録されています。"
-      });
-    }
-
   const code = Math.random()
   .toString(36)
   .substring(2, 8);
@@ -116,6 +109,13 @@ async function handleEvent(event) {
     text: `このコードを親に送ってください👇\n\n${code}`
   });
 }
+
+ if (user.role === "parent") {
+      return client.replyMessage(event.replyToken, {
+        type:"text",
+        text:"あなたは既に親として登録されています。"
+      });
+    }
 
   if (text.length === 6) {
 
