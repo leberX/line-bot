@@ -379,14 +379,9 @@ cron.schedule('0 */3 * * *', async () => {
 
     console.log("🧨 insert error:", insertError);
 
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "あなたは親ですか？子ですか？\n「1:親」「2:子」で答えてください"
-  });
-}
-
     console.log("DB user:", user)
     console.log("DB error:", error)
+  };
 
   // 👇 これ絶対必要
   if (!user) {
