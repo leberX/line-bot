@@ -270,7 +270,7 @@ console.log("送信先：", child?.user_id)
       user_id: userId,
       streak: user.streak,
       last_reply_date: user.last_reply_date,
-      notified: false
+      notified: user.notified
     }, {
       onConflict: 'user_id'
     });
@@ -355,7 +355,7 @@ cron.schedule('0 */3 * * *', async () => {
 
   console.log("⏳ 未返信チェック");
 
-  const now = Date.now();
+  const now = Date.now();F
   const diff = now - lastReplyTime;
 
   const LIMIT = 24 * 60 * 60 * 1000; // 24時間
