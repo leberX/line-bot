@@ -273,7 +273,8 @@ console.log("送信先：", child?.user_id)
       notified: user.notified
     }, {
       onConflict: 'user_id'
-    });
+    })
+    .eq('user_id', userId);
 
   if (saveError) {
     console.error("❌ 保存エラー", saveError);
@@ -302,15 +303,13 @@ console.log("送信先：", child?.user_id)
  const { data, error } = await supabase
   .from("users")
   .update({
-    user_id: userId,
     role: user.role,
     parent_id: user.parent_id,
     streak: user.streak,
     last_reply_date: user.last_reply_date,
     notified: user.notified
-  }, {
-    onConflict: 'user_id'
   })
+  .eq("user_id", userId)
   .select();
 
 console.log("💾 data:", data);
