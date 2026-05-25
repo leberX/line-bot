@@ -266,7 +266,7 @@ console.log("送信先：", child?.user_id)
   // ===== DB保存 =====
   const { error: saveError } = await supabase
     .from('users')
-    .upsert({
+    .update({
       user_id: userId,
       streak: user.streak,
       last_reply_date: user.last_reply_date,
@@ -301,7 +301,7 @@ console.log("送信先：", child?.user_id)
 
  const { data, error } = await supabase
   .from("users")
-  .upsert({
+  .update({
     user_id: userId,
     role: user.role,
     parent_id: user.parent_id,
