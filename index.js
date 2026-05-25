@@ -75,15 +75,21 @@ async function handleEvent(event) {
 
   const userId = event.source.userId;
 
-  await supabase
+ const { data: existingUser } = await supabase
   .from('users')
-  .upsert({
-    user_id: userId,
-    streak: 0,
-    notified: false
-  }, {
-    onConflict: 'user_id'
-  });
+  .select('*')
+  .eq('user_id', userId)
+  .single();
+
+  if (!existingUser) {
+  await supabase
+    .from('users')
+    .insert({
+      user_id: userId,
+      streak: 0,
+      notified: false
+    });
+}
 
   console.log("userId:", userId);
   const text = event.message.text.trim();
