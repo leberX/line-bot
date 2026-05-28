@@ -53,6 +53,10 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
+  console.log("EVENT ID:", event.webhookEventId);
+  console.log("EVENT TYPE:", event.type);
+console.log("TEXT:", event.message?.text);
+
   console.log("handleEvent Success",event.type
   );
 
@@ -293,10 +297,10 @@ console.log("送信先：", child?.user_id)
   } else {
     user.streak = 1;
   }
-
   user.last_reply_date = today;
   user.notified = false;
 }
+
   // 👇 ここに入れる（超重要）
   console.log("🔥 保存前", user);
 
