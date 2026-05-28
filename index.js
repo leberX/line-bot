@@ -161,8 +161,6 @@ async function handleEvent(event) {
 
   lastReplyTime = Date.now();
 
-  let notified = false;
-
   const userMessage = event.message.text.trim();
   let replyText = "";
 
@@ -299,10 +297,6 @@ console.log("送信先：", child?.user_id)
   user.last_reply_date = today;
   user.notified = false;
 }
-
-  user.last_reply_date = today;
-  user.notified = false;
-
   // 👇 ここに入れる（超重要）
   console.log("🔥 保存前", user);
 
@@ -355,7 +349,7 @@ cron.schedule('0 9 * * *', async () => {
     console.error("❌ 送信失敗:", error);
   }
 });
-// ===== 未返信検知（1時間ごと）=====
+// ===== 未返信検知（3時間ごと）=====
 cron.schedule('0 */3 * * *', async () => {
 
   console.log("⏳ 未返信チェック");
