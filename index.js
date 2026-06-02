@@ -227,7 +227,7 @@ async function handleEvent(event) {
       }}
       // 👆 今日すでに送ってる場合は何も変えない（でも処理は通す）
 
-      user.last_reply_date = Today;
+      user.last_reply_date = today;
 
       // ===== 体調ごとの処理 =====
       if (userMessage === "1") {
