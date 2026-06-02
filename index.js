@@ -290,17 +290,6 @@ async function handleEvent(event) {
             console.log("✅ 保存成功");
           }
 
-          if (user.last_reply_date !== today) {
-
-            if (user.last_reply_date === yesterdayStr) {
-              user.streak++;
-            } else {
-              user.streak = 1;
-            }
-            user.last_reply_date = today;
-            user.notified = false;
-          }
-
           // 👇 ここに入れる（超重要）
           console.log("🔥 保存前", user);
 
