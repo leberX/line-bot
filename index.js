@@ -39,11 +39,28 @@ console.log("=== 健康チェックBot 起動 ===");
 // ===== Webhook（返信処理）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
   console.log("webhook通過");
+try {
+
+    const events = req.body.events;
+
+    await Promise.all(events.map(handleEvent));
+
+    console.log("全イベント処理成功");
+
+    res.sendStatus(200);
+
+  } catch (err) {
+
+    console.error("Webhook Error:", err);
+
+    res.sendStatus(200);
+  }
+});
 
   const events = req.body.events;
   await Promise.all(events.map(handleEvent));
   res.sendStatus(200);
-});
+;
 
 app.get('/', (req, res) => {
   console.log("アクセスしました");
@@ -52,6 +69,7 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
+  console.log("START", event.webhookEventId);
   try {
 
     console.log("EVENT ID:", event.webhookEventId);
@@ -323,6 +341,7 @@ async function handleEvent(event) {
 
       }} catch (err) {
         console.error("handleEvent Error:", err);
+        console.log("END", event.webhookEventId);
       }
      };
 
