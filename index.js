@@ -333,6 +333,7 @@ async function handleEvent(event) {
         }
 
         // 👇 返信
+        console.log("replymessage直前");
         return client.replyMessage(event.replyToken, {
           type: "text",
           text: replyText
