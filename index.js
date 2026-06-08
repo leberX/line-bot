@@ -55,6 +55,7 @@ try {
 
     res.sendStatus(200);
   }
+
   const events = req.body.events;
   await Promise.all(events.map(handleEvent));
   res.sendStatus(200);
@@ -369,7 +370,7 @@ async function handleEvent(event) {
 
       console.log("⏳ 未返信チェック");
 
-      const now = Date.now(); F
+      const now = Date.now();
       const diff = now - lastReplyTime;
 
       const LIMIT = 24 * 60 * 60 * 1000; // 24時間
