@@ -335,13 +335,12 @@ async function handleEvent(event) {
 
         // 👇 返信
         console.log("replymessage直前");
-        await client.replyMessage(event.replyToken, {
+        console.log("replyToken =", event.replyToken);
+        console.log("replyText =", replyText);
+        return client.replyMessage(event.replyToken, {
           type: "text",
           text: replyText
        });
-
-console.log("replymessage成功");
-return;
 
       }} catch (err) {
 
