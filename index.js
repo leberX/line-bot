@@ -288,10 +288,8 @@ async function handleEvent(event) {
   現在 ${user.streak} 日連続です。`;
           } catch (err) {
             console.error("push失敗", err);
-
-            console.log("status =", err.response?.status);
-
-           console.log("data =",JSON.stringify(err.response?.data, null, 2));
+            console.log("name =", err.name);
+            console.log("message =", err.message);
             replyText = "failed to send message!!";
           }
 
