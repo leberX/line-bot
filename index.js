@@ -16,6 +16,7 @@ const path = require('path');
 
 const { createClient } = require('@supabase/supabase-js');
 const { type } = require('os');
+const { log } = require('console');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -334,10 +335,13 @@ async function handleEvent(event) {
 
         // 👇 返信
         console.log("replymessage直前");
-        return client.replyMessage(event.replyToken, {
+        await client.replyMessage(event.replyToken, {
           type: "text",
           text: replyText
        });
+
+console.log("replymessage成功");
+return;
 
       }} catch (err) {
 
