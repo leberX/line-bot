@@ -289,7 +289,7 @@ async function handleEvent(event) {
           } catch (err) {
             console.error("push失敗", err);
 
-            console.error(err);
+            console.error(err.response?.data);
             replyText = "failed to send message!!";
           }
 
