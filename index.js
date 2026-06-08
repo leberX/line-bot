@@ -344,8 +344,8 @@ async function handleEvent(event) {
   console.error("handleEvent Error:", err);
 
   if (err.response) {
-    console.log("status:", err.response.status);
-    console.log("data:", err.response.data);
+    console.log("ステータス 'status' =", err.response.status);
+    console.log("データ 'data' =", err.response.data);
   }
 
   console.log("END", event.webhookEventId);
