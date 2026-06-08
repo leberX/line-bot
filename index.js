@@ -336,7 +336,7 @@ async function handleEvent(event) {
         // 👇 返信
         console.log("replymessage直前");
         console.log("replyToken =", event.replyToken);
-        console.log("replyText =", replyText);
+        console.log("replyText =", JSON.stringify(replyText));
         return client.replyMessage(event.replyToken, {
           type: "text",
           text: replyText
