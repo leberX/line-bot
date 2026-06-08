@@ -274,19 +274,23 @@ async function handleEvent(event) {
 
           const child = children[0];
 
+           console.log("送信先：", child?.user_id)
+
           try {
-
-            console.log("送信先：", child?.user_id)
-
             await client.pushMessage(child.user_id, {
               type: "text",
               text: "⚠️ 親の体調が悪いと報告されました"
             });
 
+            console.log("push成功");
+
             replyText = `少し心配です。今日はゆっくり休んでくださいね💦
   現在 ${user.streak} 日連続です。`;
           } catch (err) {
-            console.error("通知失敗", err);
+            console.error("push失敗", err);
+
+            console.error(err);
+            replyText = "failed to send message!!";
           }
 
           // ===== DB保存 =====
