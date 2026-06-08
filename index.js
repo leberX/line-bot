@@ -340,10 +340,16 @@ async function handleEvent(event) {
        });
 
       }} catch (err) {
-        console.error("handleEvent Error:", err);
-        console.log("END", event.webhookEventId);
-      }
-     };
+
+  console.error("handleEvent Error:", err);
+
+  if (err.response) {
+    console.log("status:", err.response.status);
+    console.log("data:", err.response.data);
+  }
+
+  console.log("END", event.webhookEventId);
+}};
 
     // ===== cron（毎朝9時）=====
     cron.schedule('0 9 * * *', async () => {
