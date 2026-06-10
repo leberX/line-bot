@@ -291,6 +291,10 @@ async function handleEvent(event) {
             console.log("name =", err.name);
             console.log("message =", err.message);
             replyText = "failed to send message!!";
+          } finally {
+
+            console.log("END",event.webhookEventId);
+
           }
 
           // ===== DB保存 =====
