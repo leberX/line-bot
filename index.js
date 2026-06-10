@@ -56,10 +56,6 @@ try {
 
     res.sendStatus(200);
   }
-
-  const events = req.body.events;
-  await Promise.all(events.map(handleEvent));
-  res.sendStatus(200);
 });
 
 app.get('/', (req, res) => {
