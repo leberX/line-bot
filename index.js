@@ -69,6 +69,10 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
+  console.log(
+  "EVENT ID =",
+  event.webhookEventId
+);
   try {
     if (event.type === 'follow') {
       return client.replyMessage(event.replyToken, {
