@@ -39,7 +39,8 @@ console.log("=== 健康チェックBot 起動 ===");
 
 // ===== Webhook（返信処理）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
-  console.log("webhook通過");
+    console.log("webhook in");
+    console.log("events.length =",req.body.events.length );
 try {
 
     const events = req.body.events;
@@ -65,25 +66,7 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
-  console.log(
-  "eventId =",
-  event.webhookEventId
-);
-
-console.log("★★★★★★★★");
-console.log("eventId =", event.webhookEventId);
-console.log("isRedelivery =", event.deliveryContext?.isRedelivery);
-console.log("★★★★★★★★");
-
-  console.log("START", event.webhookEventId);
   try {
-
-    console.log("EVENT ID:", event.webhookEventId);
-    console.log("EVENT TYPE:", event.type);
-    console.log("TEXT:", event.message?.text);
-    console.log("handleEvent Success", event.type
-    );
-
     if (event.type === 'follow') {
       return client.replyMessage(event.replyToken, {
         type: 'text',
