@@ -44,6 +44,10 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
     console.log("=======================================");
     console.log("time =", new Date().toISOString());
     console.log("=======================================");
+    console.log(
+  "REQUEST TIME",
+  Date.now()
+);
 try {
 
     const events = req.body.events;
@@ -72,6 +76,15 @@ async function handleEvent(event) {
   console.log(
   "EVENT ID =",
   event.webhookEventId
+);
+console.log(
+  "MESSAGE ID =",
+  event.message?.id
+);
+
+console.log(
+  "REPLY TOKEN =",
+  event.replyToken
 );
   try {
     if (event.type === 'follow') {
