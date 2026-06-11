@@ -286,6 +286,8 @@ async function handleEvent(event) {
             console.error("push失敗", err);
             console.log("name =", err.name);
             console.log("message =", err.message);
+            console.log("response =", err.response);
+            console.log("err.response?.data =", err.response?.data);
             replyText = "failed to send message!!";
           } finally {
 
