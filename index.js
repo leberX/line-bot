@@ -42,7 +42,7 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
     console.log("webhook in");
     console.log("events.length =",req.body.events.length );
     console.log("=======================================");
-    console.log("time =", new Date().toISOString);
+    console.log("time =", new Date().toISOString());
     console.log("=======================================");
 try {
 
