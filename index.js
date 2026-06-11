@@ -65,6 +65,15 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
+  console.log(
+  "eventId =",
+  event.webhookEventId
+);
+
+console.log(
+  "isRedelivery =",
+  event.deliveryContext?.isRedelivery
+);
   console.log("START", event.webhookEventId);
   try {
 
@@ -284,10 +293,8 @@ async function handleEvent(event) {
   現在 ${user.streak} 日連続です。`;
           } catch (err) {
             console.error("push失敗", err);
-            console.log("name =", err.name);
-            console.log("message =", err.message);
-            console.log("response =", err.response);
             console.log("err.response?.data =", err.response?.data);
+            console.log("original response =", err.originalError?.response?.data);
             replyText = "failed to send message!!";
           } finally {
 
