@@ -41,6 +41,7 @@ console.log("=== 健康チェックBot 起動 ===");
 app.post('/webhook', line.middleware(config), async (req, res) => {
     console.log("webhook in");
     console.log("events.length =",req.body.events.length );
+    console.log("time =", new Date().toISOString);
 try {
 
     const events = req.body.events;
