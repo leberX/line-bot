@@ -70,10 +70,11 @@ async function handleEvent(event) {
   event.webhookEventId
 );
 
-console.log(
-  "isRedelivery =",
-  event.deliveryContext?.isRedelivery
-);
+console.log("★★★★★★★★");
+console.log("eventId =", event.webhookEventId);
+console.log("isRedelivery =", event.deliveryContext?.isRedelivery);
+console.log("★★★★★★★★");
+
   console.log("START", event.webhookEventId);
   try {
 
