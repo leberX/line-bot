@@ -423,7 +423,7 @@ console.log(
 
         console.log("DB user:", user)
         console.log("DB error:", error)
-      });
+      
 
       // 👇 これ絶対必要
       if (!user) {
@@ -449,7 +449,7 @@ console.log(
       } catch (err) {
         console.error("❌ 未返信通知失敗", err);
       }
-
+    });
     // ===== サーバー起動 =====
     const port = process.env.PORT || 3000;
 
