@@ -403,10 +403,10 @@ console.log(
       const LIMIT = 24 * 60 * 60 * 1000; // 24時間
 
       const { data: user, error } = await supabase
-        .from('users')
-        .select('*')
-        .single();
-      
+      .from("users")
+      .select("*")
+
+      console.log("取得人数:", data ? data.length : 0);
 
       // 👇 これ絶対必要
       if (!user) {
