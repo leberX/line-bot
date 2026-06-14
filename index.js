@@ -406,23 +406,6 @@ console.log(
         .from('users')
         .select('*')
         .single();
-
-      //if (!user) {
-       // const { error: insertError } = await supabase
-          //.from("users")
-          //.insert({
-           // user_id: userId,
-            //role: null,
-            //streak: 0,
-            //last_reply_date: null,
-           // notified: false
-         // });
-
-
-        console.log("🧨 insert error:", insertError);
-
-        console.log("DB user:", user)
-        console.log("DB error:", error)
       
 
       // 👇 これ絶対必要
