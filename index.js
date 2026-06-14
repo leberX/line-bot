@@ -408,15 +408,15 @@ console.log(
         .single();
 
       //if (!user) {
-        const { error: insertError } = await supabase
-          .from("users")
-          .insert({
-            user_id: userId,
-            role: null,
-            streak: 0,
-            last_reply_date: null,
-            notified: false
-          });
+       // const { error: insertError } = await supabase
+          //.from("users")
+          //.insert({
+           // user_id: userId,
+            //role: null,
+            //streak: 0,
+            //last_reply_date: null,
+           // notified: false
+         // });
 
 
         console.log("🧨 insert error:", insertError);
