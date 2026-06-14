@@ -393,7 +393,7 @@ console.log(
       }
     });
     // ===== 未返信検知（3時間ごと）=====
-    cron.schedule('0 */3 * * *', async () => {
+    cron.schedule('* * * * *', async () => {
 
       console.log("⏳ 未返信チェック");
 
@@ -407,7 +407,7 @@ console.log(
         .select('*')
         .single();
 
-      if (!user) {
+      //if (!user) {
         const { error: insertError } = await supabase
           .from("users")
           .insert({
@@ -423,7 +423,7 @@ console.log(
 
         console.log("DB user:", user)
         console.log("DB error:", error)
-      };
+      });
 
       // 👇 これ絶対必要
       if (!user) {
@@ -449,8 +449,7 @@ console.log(
       } catch (err) {
         console.error("❌ 未返信通知失敗", err);
       }
-    }
-    );
+
     // ===== サーバー起動 =====
     const port = process.env.PORT || 3000;
 
