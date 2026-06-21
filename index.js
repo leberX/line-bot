@@ -49,9 +49,9 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
 
     await Promise.all(events.map(handleEvent));
 
+    console.log("全イベント処理成功");
     res.sendStatus(200);
-
-    res.sendStatus(200);
+    console.log("200送信");
   
 });
 
@@ -63,6 +63,8 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
   console.log("======== HANDLE EVENT START ========");
+
+  console.log("isRedelivery =",event.deliveryContext?.isRedelivery);
 
   console.log("type =", event.type);
 
