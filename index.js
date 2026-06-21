@@ -40,30 +40,19 @@ console.log("=== 健康チェックBot 起動 ===");
 // ===== Webhook（返信処理）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
     console.log("webhook in");
-    console.log("events.length =",req.body.events.length );
-    console.log("=======================================");
-    console.log("time =", new Date().toISOString());
-    console.log("=======================================");
-    console.log(
-  "REQUEST TIME",
-  Date.now()
-);
-try {
+    
+    console.log(JSON.stringify(req.body, null, 2));
 
     const events = req.body.events;
 
+    console.log("events.length =", events.length);
+
     await Promise.all(events.map(handleEvent));
 
-    console.log("全イベント処理成功");
-
     res.sendStatus(200);
 
-  } catch (err) {
-
-    console.error("Webhook Error:", err);
-
     res.sendStatus(200);
-  }
+  
 });
 
 app.get('/', (req, res) => {
@@ -73,19 +62,18 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
-  console.log(
-  "EVENT ID =",
-  event.webhookEventId
-);
-console.log(
-  "MESSAGE ID =",
-  event.message?.id
-);
+  console.log("======== HANDLE EVENT START ========");
 
-console.log(
-  "REPLY TOKEN =",
-  event.replyToken
-);
+  console.log("type =", event.type);
+
+  console.log("replyToken =", event.replyToken);
+
+  console.log("timestamp =", event.timestamp);
+
+  console.log("source =", event.source);
+
+  console.log("message =", event.message);
+
   try {
     if (event.type === 'follow') {
       return client.replyMessage(event.replyToken, {
