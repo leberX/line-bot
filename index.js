@@ -43,6 +43,8 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
     
     console.log(JSON.stringify(req.body, null, 2));
 
+    console.log("time =", new Date().toISOString());
+
     const events = req.body.events;
 
     console.log("events.length =", events.length);
