@@ -78,7 +78,7 @@ async function handleEvent(event) {
 
   console.log("source =", event.source);
 
-  console.log("message =", event.message);
+  console.log("message.id =", event.message?.id);
 
   try {
     if (event.type === 'follow') {
