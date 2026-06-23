@@ -48,6 +48,12 @@ try {
 
 } catch (err) {
   console.error("Promise.all失敗", err);
+
+  console.error("err =", err);
+
+  console.error("message =", err?.message);
+
+  console.error("stack =", err?.stack);
 }
     res.sendStatus(200);
     console.log("200送信");
