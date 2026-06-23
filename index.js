@@ -68,6 +68,8 @@ async function handleEvent(event) {
 
   console.log("isRedelivery =",event.deliveryContext?.isRedelivery);
 
+  console.log("webhookEventId =", event.webhookEventId);
+
   console.log("type =", event.type);
 
   console.log("replyToken =", event.replyToken);
