@@ -71,6 +71,8 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
+
+  console.log("isRedelivery =", event.deliveryContext?.isRedelivery);
  
   if (event.deliveryContext?.isRedelivery) {
     console.log("再配送なのでスキップ");
