@@ -80,6 +80,8 @@ async function handleEvent(event) {
 }
 
     if (event.type === 'follow') {
+      console.log("案内^1");
+      console.log("replyToken =", event.replyToken);
       return client.replyMessage(event.replyToken, {
         type: 'text',
         text: `このLINEは、あなたの体調を簡単に確認するためのものです。
@@ -133,6 +135,8 @@ async function handleEvent(event) {
         })
         .eq("user_id", userId);
 
+      console.log("連携コード送信^2");
+      console.log("replyToken =", event.replyToken);
       return client.replyMessage(event.replyToken, {
         type: "text",
         text: `このコードを親に送ってください👇\n\n${code}`
@@ -154,6 +158,8 @@ async function handleEvent(event) {
       console.log("child:", child);
 
       if (!child) {
+        console.log("コード間違い^3");
+        console.log("replyToken =", event.replyToken);
         return client.replyMessage(event.replyToken, {
           type: "text",
           text: "❌ コードが間違っています"
@@ -175,7 +181,9 @@ async function handleEvent(event) {
           role: "parent"
         })
         .eq("user_id", userId);
-
+      
+      console.log("連携完了^4");
+      console.log("replyToken =", event.replyToken);
       return client.replyMessage(event.replyToken, {
         type: "text",
         text: "✅ 連携完了しました"
@@ -342,7 +350,8 @@ async function handleEvent(event) {
           }
         }
         try {
-
+  console.log("通常返信^5");
+  console.log("replyToken =", event.replyToken);
   const result = await client.replyMessage(event.replyToken,{
       type: "text",
       text: replyText
