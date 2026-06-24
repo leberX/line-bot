@@ -82,8 +82,6 @@ async function handleEvent(event) {
   console.log("source =", event.source);
 
   console.log("message.id =", event.message?.id);
-
-  try {
     if (event.type === 'follow') {
       return client.replyMessage(event.replyToken, {
         type: 'text',
@@ -346,17 +344,27 @@ async function handleEvent(event) {
             console.log("✅ 保存成功", data);
           }
         }
+        try {
 
-        // 👇 返信
-        console.log("replymessage直前");
-        console.log("replyToken =", event.replyToken);
-        console.log("replyText =", JSON.stringify(replyText));
-        return client.replyMessage(event.replyToken, {
-          type: "text",
-          text: replyText
-       });
+  const result = await client.replyMessage(event.replyToken,{
+      type: "text",
+      text: replyText
+    }
+  );
 
-      }} catch (err) {
+  console.log("reply成功", result);
+
+} catch(err) {
+
+  console.log("reply失敗");
+
+  console.log("response =", err.response?.data);
+
+  console.log("original =",err.originalError?.response?.data);
+
+  throw err;
+}};
+      
 
   console.error("handleEvent Error:", err);
 
@@ -366,7 +374,7 @@ async function handleEvent(event) {
   }
 
   console.log("END", event.webhookEventId);
-}};
+};
 
     // ===== cron（毎朝9時）=====
     cron.schedule('0 9 * * *', async () => {
