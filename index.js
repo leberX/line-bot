@@ -43,22 +43,13 @@ app.post('/webhook', line.middleware(config), async (req, res) => {
     console.log("webhook in");
     const events = req.body.events;
 
-try {
+
     await Promise.all(events.map(handleEvent));
 
     console.log("全イベント処理成功");
 
     console.log("処理時間(ms) =",Date.now() - startTime);
-
-} catch (err) {
-  console.error("Promise.all失敗", err);
-
-  console.error("err =", err);
-
-  console.error("message =", err?.message);
-
-  console.error("stack =", err?.stack);
-};
+    
     res.sendStatus(200);
 
     console.log("200送信");
