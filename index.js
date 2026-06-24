@@ -39,12 +39,15 @@ console.log("=== 健康チェックBot 起動 ===");
 
 // ===== Webhook（返信処理）=====
 app.post('/webhook', line.middleware(config), async (req, res) => {
+    const startTime = Date.now();
     console.log("webhook in");
     const events = req.body.events;
 try {
     await Promise.all(events.map(handleEvent));
 
     console.log("全イベント処理成功");
+
+    console.log("処理時間(ms) =",Date.now() - startTime);
 
 } catch (err) {
   console.error("Promise.all失敗", err);
