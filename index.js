@@ -57,7 +57,6 @@ try {
 }
     res.sendStatus(200);
     console.log("200送信");
-  
 });
 
 app.get('/', (req, res) => {
@@ -67,21 +66,12 @@ app.get('/', (req, res) => {
 
 // ===== メイン処理 =====
 async function handleEvent(event) {
-  console.log("======== HANDLE EVENT START ========");
+ 
+  if (event.deliveryContext?.isRedelivery) {
+    console.log("再配送なのでスキップ");
+    return;
+}
 
-  console.log("isRedelivery =",event.deliveryContext?.isRedelivery);
-
-  console.log("webhookEventId =", event.webhookEventId);
-
-  console.log("type =", event.type);
-
-  console.log("replyToken =", event.replyToken);
-
-  console.log("timestamp =", event.timestamp);
-
-  console.log("source =", event.source);
-
-  console.log("message.id =", event.message?.id);
     if (event.type === 'follow') {
       return client.replyMessage(event.replyToken, {
         type: 'text',
