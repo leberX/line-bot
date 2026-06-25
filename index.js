@@ -256,6 +256,7 @@ async function handleEvent(event) {
         console.log("③ if(text==='1')入った");
         replyText = `最高だな🔥
 現在 ${user.streak} 日連続です。`;
+        console.log("③.5");
 
       } else if (userMessage === "2") {
         replyText = `いい感じだ👌
@@ -330,18 +331,16 @@ async function handleEvent(event) {
             })
             .eq("user_id", userId)
             .select();
-
-        }
+          }
         
-  console.log("④ reply直前");
-  return client.replyMessage(event.replyToken,{
-      type: "text",
-      text: replyText
-    }
-  )}
-  };
+          console.log("④ reply直前");
+          return client.replyMessage(event.replyToken,{
+          type: "text",
+          text: replyText
+           }
+          )}
+        };
 
- 
     // ===== cron（毎朝9時）=====
     cron.schedule('0 9 * * *', async () => {
       console.log("⏰ 朝の健康チェック送信");
