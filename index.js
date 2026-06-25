@@ -331,14 +331,15 @@ async function handleEvent(event) {
             .eq("user_id", userId)
             .select();
 
-          
+        }
+        
   console.log("④ reply直前");
   const result = await client.replyMessage(event.replyToken,{
       type: "text",
       text: replyText
     }
   )}
-  }};
+  };
 
  
     // ===== cron（毎朝9時）=====
