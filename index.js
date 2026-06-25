@@ -63,6 +63,14 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
+  console.log( "EVENT",
+  event.webhookEventId,
+  event.message?.id,
+  event.deliveryContext?.isRedelivery
+);
+
+console.log("reply成功", event.webhookEventId);
+
   console.log("isRedelivery =", event.deliveryContext?.isRedelivery);
  
   if (event.deliveryContext?.isRedelivery) {
