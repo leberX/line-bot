@@ -284,13 +284,19 @@ async function handleEvent(event) {
 
            console.log("送信先：", child?.user_id)
 
-            console.log("3-3");
+            try {
             await client.pushMessage(child.user_id, {
               type: "text",
               text: "⚠️ 親の体調が悪いと報告されました"
             });
 
             console.log("push成功");
+
+          } catch (err) {
+            console.error("push失敗");
+            console.error("message =", err?.message);
+            console.error("response =", err?.response?.data);
+         };
 
              console.log("3-4");
             replyText = `少し心配です。今日はゆっくり休んでくださいね💦
@@ -337,8 +343,8 @@ async function handleEvent(event) {
           return client.replyMessage(event.replyToken,{
           type: "text",
           text: replyText
-           }
-          )};
+          })
+          };
 
     // ===== cron（毎朝9時）=====
     cron.schedule('0 9 * * *', async () => {
