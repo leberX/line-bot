@@ -281,7 +281,6 @@ async function handleEvent(event) {
 
            console.log("送信先：", child?.user_id)
 
-          try {
             await client.pushMessage(child.user_id, {
               type: "text",
               text: "⚠️ 親の体調が悪いと報告されました"
@@ -291,17 +290,7 @@ async function handleEvent(event) {
 
             replyText = `少し心配です。今日はゆっくり休んでくださいね💦
   現在 ${user.streak} 日連続です。`;
-          } catch (err) {
-            console.error("push失敗", err);
-            console.log("err.response?.data =", err.response?.data);
-            console.log("original response =", err.originalError?.response?.data);
-            replyText = "failed to send message!!";
-          } finally {
-
-            console.log("END",event.webhookEventId);
-
-          }
-
+          
           // ===== DB保存 =====
           const { error: saveError } = await supabase
             .from('users')
@@ -336,22 +325,14 @@ async function handleEvent(event) {
             .eq("user_id", userId)
             .select();
 
-          console.log("💾 data:", data);
-          console.log("💾 error:", error);
-
-          if (error) {
-            console.error("❌ 保存エラー", error);
-          } else {
-            console.log("✅ 保存成功", data);
-          }
-        }
+          
   console.log("④ reply直前");
   const result = await client.replyMessage(event.replyToken,{
       type: "text",
       text: replyText
     }
   )}
-};
+  }};
 
  
     // ===== cron（毎朝9時）=====
