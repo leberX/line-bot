@@ -294,8 +294,8 @@ async function handleEvent(event) {
 
           } catch (err) {
             console.error("push失敗");
-            console.error("message =", err?.message);
-            console.error("response =", err?.response?.data);
+            console.error("originalError =", err?.originalError);
+            console.error("body =", err.body);
          };
 
              console.log("3-4");
