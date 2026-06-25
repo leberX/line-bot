@@ -334,7 +334,7 @@ async function handleEvent(event) {
         }
         
   console.log("④ reply直前");
-  const result = await client.replyMessage(event.replyToken,{
+  return client.replyMessage(event.replyToken,{
       type: "text",
       text: replyText
     }
