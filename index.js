@@ -63,13 +63,7 @@ app.get('/', (req, res) => {
 // ===== メイン処理 =====
 async function handleEvent(event) {
 
-  console.log( "EVENT",
-  event.webhookEventId,
-  event.message?.id,
-  event.deliveryContext?.isRedelivery
-);
-
-console.log("reply成功", event.webhookEventId);
+  console.log("① handleEvent開始");
 
   console.log("isRedelivery =", event.deliveryContext?.isRedelivery);
  
@@ -191,6 +185,8 @@ console.log("reply成功", event.webhookEventId);
 
     lastReplyTime = Date.now();
 
+    console.log("② text取得", text);
+
     const userMessage = event.message.text.trim();
     let replyText = "";
 
@@ -257,6 +253,7 @@ console.log("reply成功", event.webhookEventId);
 
       // ===== 体調ごとの処理 =====
       if (userMessage === "1") {
+        console.log("③ if(text==='1')入った");
         replyText = `最高だな🔥
 現在 ${user.streak} 日連続です。`;
 
@@ -348,39 +345,15 @@ console.log("reply成功", event.webhookEventId);
             console.log("✅ 保存成功", data);
           }
         }
-        try {
-  console.log("通常返信^5");
-  console.log("replyToken =", event.replyToken);
+  console.log("④ reply直前");
   const result = await client.replyMessage(event.replyToken,{
       type: "text",
       text: replyText
     }
-  );
-
-  console.log("reply成功", result);
-
-} catch(err) {
-
-  console.log("reply失敗");
-
-  console.log("response =", err.response?.data);
-
-  console.log("original =",err.originalError?.response?.data);
-
-  throw err;
-}};
-      
-
-  console.error("handleEvent Error:", err);
-
-  if (err.response) {
-    console.log("ステータス 'status' =", err.response.status);
-    console.log("データ 'data' =", err.response.data);
-  }
-
-  console.log("END", event.webhookEventId);
+  )}
 };
 
+ 
     // ===== cron（毎朝9時）=====
     cron.schedule('0 9 * * *', async () => {
       console.log("⏰ 朝の健康チェック送信");
