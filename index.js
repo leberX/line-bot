@@ -264,6 +264,7 @@ async function handleEvent(event) {
       } else if (userMessage === "3") {
 
         // 👇 子を取得（配列になる）
+        console.log("3-1");
         const { data: children, error } = await supabase
           .from("users")
           .select("user_id")
@@ -277,10 +278,12 @@ async function handleEvent(event) {
           console.log("❌ 子がいない");
         } else {
 
+           console.log("3-2");
           const child = children[0];
 
            console.log("送信先：", child?.user_id)
 
+            console.log("3-3");
             await client.pushMessage(child.user_id, {
               type: "text",
               text: "⚠️ 親の体調が悪いと報告されました"
@@ -288,10 +291,12 @@ async function handleEvent(event) {
 
             console.log("push成功");
 
+             console.log("3-4");
             replyText = `少し心配です。今日はゆっくり休んでくださいね💦
   現在 ${user.streak} 日連続です。`;
           
           // ===== DB保存 =====
+           console.log("3-5");
           const { error: saveError } = await supabase
             .from('users')
             .update({
@@ -313,6 +318,7 @@ async function handleEvent(event) {
           // 👇 ここに入れる（超重要）
           console.log("🔥 保存前", user);
 
+           console.log("3-6");
           const { data, error } = await supabase
             .from("users")
             .update({
