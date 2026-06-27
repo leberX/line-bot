@@ -383,45 +383,92 @@ const { data: parents, error } = await supabase
   
     // ===== 未返信検知（3時間ごと）=====
     cron.schedule('* * * * *', async () => {
+  console.log("⏳ 未返信チェック");
 
-      console.log("⏳ 未返信チェック");
+  const LIMIT = 24 * 60 * 60 * 1000; // 24時間
+  const now = Date.now();
 
-      const now = Date.now();
-      const diff = now - lastReplyTime;
+  // ① 親を全員取得
+  const { data: parents, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("role", "parent");
 
-      const LIMIT = 24 * 60 * 60 * 1000; // 24時間
+  if (error) {
+    console.error("❌ 親取得失敗", error);
+    return;
+  }
 
-      const { data: user, error } = await supabase
-      .from("users")
-      .select("*")
+  console.log("親人数:", parents.length);
 
-      console.log("取得人数:", data ? data.length : 0);
+  // ② 親を1人ずつチェック
+  for (const parent of parents) {
 
-      // 👇 これ絶対必要
-      if (!user) {
-        console.log("❌ userが存在しない");
-        return;
+    // last_reply_dateが無ければスキップ
+    if (!parent.last_reply_date) {
+      console.log("返信履歴なし:", parent.user_id);
+      continue;
+    }
+
+    const diff =
+      now - new Date(parent.last_reply_date).getTime();
+
+    console.log(
+      "親:", parent.user_id,
+      "経過時間:", Math.floor(diff / 1000), "秒"
+    );
+
+    // 24時間未返信 & 未通知
+    if (diff > LIMIT && !parent.notified) {
+
+      console.log("⚠️ 未返信発見");
+
+      // ③ 子を取得
+      const { data: child, error: childError } =
+        await supabase
+          .from("users")
+          .select("user_id")
+          .eq("role", "child")
+          .eq("parent_id", parent.user_id)
+          .single();
+
+      if (childError || !child) {
+        console.log("❌ 子が見つからない");
+        continue;
       }
+
+      console.log("通知先:", child.user_id);
 
       try {
 
-        if (diff > LIMIT && !user.notified) {
+        // ④ 子へ通知
+        await client.pushMessage(child.user_id, {
+          type: "text",
+          text: "⚠️ 24時間返信がないみたいです"
+        });
 
-          if (child) {
-            await client.pushMessage(child.user_id, {
-              type: "text",
-              text: "⚠️ 24時間返信がないみたいです"
-            });
-          }
-          user.notified = true;
+        console.log("✅ 通知送信");
 
-          console.log("🚨 未返信通知送信(1回のみ)");
+        // ⑤ notifiedをtrueにする
+        const { error: updateError } = await supabase
+          .from("users")
+          .update({
+            notified: true
+          })
+          .eq("user_id", parent.user_id);
+
+        if (updateError) {
+          console.error("❌ notified更新失敗", updateError);
+        } else {
+          console.log("✅ notified更新");
         }
 
       } catch (err) {
-        console.error("❌ 未返信通知失敗", err);
+        console.error("❌ push失敗", err);
       }
-    });
+    }
+  }
+});
     // ===== サーバー起動 =====
     const port = process.env.PORT || 3000;
 
