@@ -350,8 +350,21 @@ async function handleEvent(event) {
     cron.schedule('* * * * *', async () => {
       console.log("⏰ 朝の健康チェック送信");
 
+const { data: parents, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("role", "parent");
+
+  if (error) {
+    console.error("❌ 親取得失敗", error);
+    return;
+  }
+
+  console.log("親人数 =", parents.length);
+
+  for (const parent of parents) {
       try {
-        await client.pushMessage(user.parent_id, {
+        await client.pushMessage(user.user_id, {
           type: "text",
           text: `おはようございます☀️
 
@@ -366,7 +379,8 @@ async function handleEvent(event) {
       } catch (error) {
         console.error("❌ 送信失敗:", error);
       }
-    });
+    }});
+  
     // ===== 未返信検知（3時間ごと）=====
     cron.schedule('0 */3 * * *', async () => {
 
