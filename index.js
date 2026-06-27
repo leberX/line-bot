@@ -364,7 +364,7 @@ const { data: parents, error } = await supabase
 
   for (const parent of parents) {
       try {
-        await client.pushMessage(user.user_id, {
+        await client.pushMessage(parent.user_id, {
           type: "text",
           text: `おはようございます☀️
 
