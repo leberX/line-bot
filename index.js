@@ -379,11 +379,12 @@ const { data: parents, error } = await supabase
       } catch (error) {
         console.error("❌ 送信失敗:", error);
       }
-    }});
+    }
+  {
+    timezone: "Asia/Tokyo"
+  }});
   
-    {
-      timezone: "Asia/Tokyo"
-    };
+    
     
     // ===== 未返信検知（3時間ごと）=====
     cron.schedule('0 */3 * * *', async () => {
