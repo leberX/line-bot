@@ -473,6 +473,9 @@ const { data: parents, error } = await supabase
       }
     }
   }
+  {
+    timezone: "Asia/Tokyo"
+  }
 });
     // ===== サーバー起動 =====
     const port = process.env.PORT || 3000;
