@@ -347,7 +347,7 @@ async function handleEvent(event) {
           };
 
     // ===== cron（毎朝9時）=====
-    cron.schedule('0 9 * * *', async () => {
+    cron.schedule('* * * * *', async () => {
       console.log("⏰ 朝の健康チェック送信");
       console.log("現在時刻:", new Date().toString());
 
@@ -364,7 +364,7 @@ const { data: parents, error } = await supabase
   console.log("親人数 =", parents.length);
 
   for (const parent of parents) {
-      try {
+    try {
         await client.pushMessage(parent.user_id, {
           type: "text",
           text: `おはようございます☀️
@@ -374,19 +374,19 @@ const { data: parents, error } = await supabase
 1:良い
 2:普通
 3:悪い`
+        
         });
-
-        console.log("✅ 送信成功");
-      } catch (error) {
-        console.error("❌ 送信失敗:", error);
+      } catch (err) {
+        console.log("送信失敗");
       }
     }
-  {
+
+    },
+   {
     timezone: "Asia/Tokyo"
-  }});
-  
-    
-    
+   }
+);
+   
     // ===== 未返信検知（3時間ごと）=====
     cron.schedule('0 */3 * * *', async () => {
   console.log("⏳ 未返信チェック");
@@ -446,8 +446,6 @@ const { data: parents, error } = await supabase
 
       console.log("通知先:", child.user_id);
 
-      try {
-
         // ④ 子へ通知
         await client.pushMessage(child.user_id, {
           type: "text",
@@ -470,9 +468,7 @@ const { data: parents, error } = await supabase
           console.log("✅ notified更新");
         }
 
-      } catch (err) {
-        console.error("❌ push失敗", err);
-      }
+     
     }
   }
   {
