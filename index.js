@@ -347,7 +347,7 @@ async function handleEvent(event) {
           };
 
     // ===== cron（毎朝9時）=====
-    cron.schedule('* * * * *', async () => {
+    cron.schedule('0 9 * * *', async () => {
       console.log("⏰ 朝の健康チェック送信");
       console.log("現在時刻:", new Date().toString());
 
