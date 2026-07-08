@@ -254,12 +254,12 @@ async function handleEvent(event) {
       // ===== 体調ごとの処理 =====
       if (userMessage === "1") {
         console.log("③ if(text==='1')入った");
-        replyText = `最高だな🔥
+        replyText = `お元気そうで何よりです♪　無理せずお過ごしくださいね！
 現在 ${user.streak} 日連続です。`;
         console.log("③.5");
 
       } else if (userMessage === "2") {
-        replyText = `いい感じだ👌
+        replyText = `ご返信ありがとうございます。無理せずお過ごしくださいね！
 現在 ${user.streak} 日連続です。`;
 
       } else if (userMessage === "3") {
