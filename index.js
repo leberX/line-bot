@@ -263,7 +263,9 @@ async function handleEvent(event) {
 現在 ${user.streak} 日連続です。`;
 
   } else if (userMessage === "3") {
-
+    replyText = `少し心配です。今日はゆっくり休んでくださいね💦
+  現在 ${user.streak} 日連続です。`;
+  }
     // 👇 子を取得（配列になる）
     console.log("3-1");
     const { data: children, error } = await supabase
@@ -284,37 +286,13 @@ async function handleEvent(event) {
 
       console.log("送信先：", child?.user_id)
 
-      try {
         await client.pushMessage(child.user_id, {
           type: "text",
           text: "⚠️ 親の体調が悪いと報告されました"
         });
-
-        console.log("push成功");
-
-      } catch (err) {
-        console.error("push失敗");
-        console.error("originalError =", err?.originalError);
-        console.error("body =", err.body);
-      };
-
-      console.log("3-4");
-      replyText = `少し心配です。今日はゆっくり休んでくださいね💦
-  現在 ${user.streak} 日連続です。`;
+      }
 
       // ===== DB保存 =====
-      console.log("3-5");
-      const { error: saveError } = await supabase
-        .from('users')
-        .update({
-          user_id: userId,
-          streak: user.streak,
-          last_reply_date: user.last_reply_date,
-          notified: user.notified
-        }, {
-          onConflict: 'user_id'
-        })
-        .eq('user_id', userId);
 
       if (saveError) {
         console.error("❌ 保存エラー", saveError);
@@ -325,20 +303,20 @@ async function handleEvent(event) {
       // 👇 ここに入れる（超重要）
       console.log("🔥 保存前", user);
 
-      console.log("3-6");
-      const { data, error } = await supabase
-        .from("users")
-        .update({
-          role: user.role,
-          parent_id: user.parent_id,
-          streak: user.streak,
-          last_reply_date: user.last_reply_date,
-          notified: false
-        })
-        .eq("user_id", userId)
-        .select();
-    }
-  }
+  const { error: updateError } = await supabase
+  .from("users")
+  .update({
+    streak: user.streak,
+    last_reply_date: new Date().toISOString(),
+    notified: false
+  })
+  .eq("user_id", userId);
+
+if (updateError) {
+  console.error("❌ 更新失敗", updateError);
+} else {
+  console.log("✅ 返信情報更新");
+}
 
   console.log("④ reply直前");
   return client.replyMessage(event.replyToken, {
