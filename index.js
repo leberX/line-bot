@@ -266,25 +266,6 @@ async function handleEvent(event) {
     replyText = `少し心配です。今日はゆっくり休んでくださいね💦
   現在 ${user.streak} 日連続です。`;
   }
-    // 👇 子を取得（配列になる）
-    console.log("3-1");
-    const { data: children, error } = await supabase
-      .from("users")
-      .select("user_id")
-      .eq("parent_id", userId)
-      .eq("role", "child");
-
-    console.log("children:", children);
-
-
-    if (!children || children.length === 0) {
-      console.log("❌ 子がいない");
-    } else {
-
-      console.log("3-2");
-      const child = children[0];
-
-      console.log("送信先：", child?.user_id)
 
         await client.pushMessage(child.user_id, {
           type: "text",
@@ -322,8 +303,7 @@ if (updateError) {
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
-  })
-};
+  });
 
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
