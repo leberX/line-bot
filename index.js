@@ -333,7 +333,7 @@ async function handleEvent(event) {
           parent_id: user.parent_id,
           streak: user.streak,
           last_reply_date: user.last_reply_date,
-          notified: user.notified
+          notified: false
         })
         .eq("user_id", userId)
         .select();
