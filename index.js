@@ -271,7 +271,7 @@ async function handleEvent(event) {
           type: "text",
           text: "⚠️ 親の体調が悪いと報告されました"
         });
-      }
+      
 
       // ===== DB保存 =====
 
@@ -303,8 +303,8 @@ if (updateError) {
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: replyText
-  });
-
+  })
+};
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
   console.log("⏰ 朝の健康チェック送信");
