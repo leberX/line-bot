@@ -457,6 +457,7 @@ const { data: parents, error } = await supabase
 
       } catch (err) {
         console.log("送信失敗")
+        console.log("OriginalError:", err?.originalError);
       }
 
         // ⑤ notifiedをtrueにする
