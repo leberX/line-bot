@@ -444,8 +444,6 @@ const { data: parents, error } = await supabase
         continue;
       }
 
-      console.log("通知先:", child.user_id);
-
         // ④ 子へ通知
         await client.pushMessage(child.user_id, {
           type: "text",
@@ -458,6 +456,7 @@ const { data: parents, error } = await supabase
       } catch (err) {
         console.log("送信失敗")
         console.log("OriginalError:", err?.originalError);
+        console.log("通知先:", child.user_id);
       }
 
         // ⑤ notifiedをtrueにする
