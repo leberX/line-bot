@@ -452,7 +452,7 @@ const { data: parents, error } = await supabase
           text: "⚠️ 24時間返信がないみたいです。"
         });
       }
-
+        console.log("child.user_id:", child.user_id);
         console.log("✅ 通知送信");
 
       } catch (err) {
