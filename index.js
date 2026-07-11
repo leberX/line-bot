@@ -451,7 +451,7 @@ const { data: parents, error } = await supabase
     
         console.log("child.user_id:", child.user_id);
         console.log("✅ 通知送信");
-      };
+      
 
         // ⑤ notifiedをtrueにする
         const { error: updateError } = await supabase
@@ -467,7 +467,7 @@ const { data: parents, error } = await supabase
         } else {
           console.log("✅ notified更新");
         }
-
+      }
      
     }
   },
