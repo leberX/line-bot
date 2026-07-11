@@ -410,7 +410,6 @@ const { data: parents, error } = await supabase
 
   // ② 親を1人ずつチェック
   for (const parent of parents) {
-      try {
     // last_reply_dateが無ければスキップ
     if (!parent.last_reply_date) {
       console.log("返信履歴なし:", parent.user_id);
@@ -449,15 +448,9 @@ const { data: parents, error } = await supabase
           type: "text",
           text: "⚠️ 24時間返信がないみたいです。"
         });
-      }
+    
         console.log("child.user_id:", child.user_id);
         console.log("✅ 通知送信");
-
-      } catch (err) {
-        console.log("送信失敗")
-        console.log("OriginalError:", err?.originalError);
-        console.log("通知先:", child.user_id);
-      }
 
         // ⑤ notifiedをtrueにする
         const { error: updateError } = await supabase
@@ -466,6 +459,7 @@ const { data: parents, error } = await supabase
             notified: true
           })
           .eq("user_id", parent.user_id);
+        };
 
         if (updateError) {
           console.error("❌ notified更新失敗", updateError);
