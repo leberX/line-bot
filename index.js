@@ -267,7 +267,7 @@ async function handleEvent(event) {
   現在 ${user.streak} 日連続です。`;
   }
 
-  const { data: children, error } = await supabase
+  const { data: child, error } = await supabase
       .from("users")
       .select("user_id")
       .eq("parent_id", userId)
