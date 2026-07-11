@@ -388,11 +388,11 @@ const { data: parents, error } = await supabase
 );
    
     // ===== 未返信検知（3時間ごと）=====
-    cron.schedule('0 */3 * * *', async () => {
+    cron.schedule('* * * * *', async () => {
   console.log("⏳ 未返信チェック");
   console.log("現在時刻:", new Date().toString());
 
-  const LIMIT = 24 * 60 * 60 * 1000; // 24時間
+  const LIMIT = 1 * 60 * 1000; // 24時間
   const now = Date.now();
 
   // ① 親を全員取得
