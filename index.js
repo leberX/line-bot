@@ -275,6 +275,14 @@ async function handleEvent(event) {
 
       // ===== DB保存 =====
 
+       const { data: children, error } = await supabase
+      .from("users")
+      .select("user_id")
+      .eq("parent_id", userId)
+      .eq("role", "child");
+
+    console.log("children:", children);
+
       if (saveError) {
         console.error("❌ 保存エラー", saveError);
       } else {
