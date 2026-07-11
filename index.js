@@ -267,6 +267,14 @@ async function handleEvent(event) {
   現在 ${user.streak} 日連続です。`;
   }
 
+  const { data: children, error } = await supabase
+      .from("users")
+      .select("user_id")
+      .eq("parent_id", userId)
+      .eq("role", "child");
+
+    console.log("children:", children);
+
         await client.pushMessage(child.user_id, {
           type: "text",
           text: "⚠️ 親の体調が悪いと報告されました"
@@ -274,14 +282,6 @@ async function handleEvent(event) {
       
 
       // ===== DB保存 =====
-
-       const { data: children, error } = await supabase
-      .from("users")
-      .select("user_id")
-      .eq("parent_id", userId)
-      .eq("role", "child");
-
-    console.log("children:", children);
 
       if (saveError) {
         console.error("❌ 保存エラー", saveError);
