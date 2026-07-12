@@ -431,7 +431,7 @@ cron.schedule('* * * * *', async () => {
       const { error: updateError } = await supabase
         .from("users")
         .update({
-          notified: true
+          notified: false
         })
         .eq("user_id", parent.user_id);
 
