@@ -252,51 +252,57 @@ async function handleEvent(event) {
   }
 
   // ===== 体調ごとの処理 =====
-  if (userMessage === "1") {
-    console.log("③ if(text==='1')入った");
-    replyText = `お元気そうで何よりです♪　無理せずお過ごしくださいね！
-現在 ${user.streak} 日連続です。`;
-    console.log("③.5");
+if (userMessage === "1") {
 
-  } else if (userMessage === "2") {
-    replyText = `ご返信ありがとうございます。無理せずお過ごしくださいね！
+  replyText = `お元気そうで何よりです♪
+無理せずお過ごしくださいね！
+
 現在 ${user.streak} 日連続です。`;
 
-  } else if (userMessage === "3") {
-    replyText = `少し心配です。今日はゆっくり休んでくださいね💦
-  現在 ${user.streak} 日連続です。`;
+} else if (userMessage === "2") {
+
+  replyText = `ご返信ありがとうございます。
+無理せずお過ごしくださいね！
+
+現在 ${user.streak} 日連続です。`;
+
+} else if (userMessage === "3") {
+
+  replyText = `少し心配です。
+今日はゆっくり休んでくださいね💦
+
+現在 ${user.streak} 日連続です。`;
+
+  // 子を取得
+  const { data: children, error } = await supabase
+    .from("users")
+    .select("user_id")
+    .eq("parent_id", userId)
+    .eq("role", "child");
+
+  console.log("children:", children);
+
+  if (!error && children && children.length > 0) {
+
+    const child = children[0];
+
+    console.log("送信先:", child.user_id);
+
+    await client.pushMessage(child.user_id, {
+      type: "text",
+      text: "⚠️ 親の体調が悪いと報告されました"
+    });
+
+    console.log("子へ通知完了");
   }
+}
 
-  const { data: child, error } = await supabase
-      .from("users")
-      .select("user_id")
-      .eq("parent_id", userId)
-      .eq("role", "child");
-
-    console.log("children:", children);
-
-        await client.pushMessage(child.user_id, {
-          type: "text",
-          text: "⚠️ 親の体調が悪いと報告されました"
-        });
-      
-
-      // ===== DB保存 =====
-
-      if (saveError) {
-        console.error("❌ 保存エラー", saveError);
-      } else {
-        console.log("✅ 保存成功");
-      }
-
-      // 👇 ここに入れる（超重要）
-      console.log("🔥 保存前", user);
-
-  const { error: updateError } = await supabase
+// ===== DB更新 =====
+const { error: updateError } = await supabase
   .from("users")
   .update({
     streak: user.streak,
-    last_reply_date: new Date().toISOString(),
+    last_reply_date: user.last_reply_date,
     notified: false
   })
   .eq("user_id", userId);
@@ -307,11 +313,12 @@ if (updateError) {
   console.log("✅ 返信情報更新");
 }
 
-  console.log("④ reply直前");
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: replyText
-  })
+console.log("④ reply直前");
+
+return client.replyMessage(event.replyToken, {
+  type: "text",
+  text: replyText
+})
 };
 // ===== cron（毎朝9時）=====
 cron.schedule('0 9 * * *', async () => {
