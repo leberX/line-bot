@@ -302,6 +302,9 @@ if (userMessage === "1") {
 }
 
 // ===== DB更新 =====
+
+user.last_reply_date = new Date().toISOString();
+
 const { error: updateError } = await supabase
   .from("users")
   .update({
