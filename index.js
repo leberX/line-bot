@@ -252,7 +252,7 @@ async function handleEvent(event) {
     user.streak = 1;
 }
     // 👆 今日すでに送ってる場合は何も変えない（でも処理は通す）
-    user.last_reply_date = today;
+    user.last_reply_date = new Date().toISOString();
   }
 
   // ===== 体調ごとの処理 =====
@@ -306,7 +306,7 @@ const { error: updateError } = await supabase
   .from("users")
   .update({
     streak: user.streak,
-    last_reply_date: new Date().toISOString(),
+    last_reply_date: user.last_reply_date,
     notified: false
   })
   .eq("user_id", userId);
