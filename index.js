@@ -242,11 +242,15 @@ async function handleEvent(event) {
     const yesterdayStr = yesterday.toISOString().split('T')[0];
 
     // ===== ストリーク計算 =====
-    if (user.last_reply_date === yesterdayStr) {
-      user.streak++;
-    } else if (user.last_reply_date !== today) {
-      user.streak = 1;
-    }
+    const lastDay = user.last_reply_date
+  ? user.last_reply_date.split("T")[0]
+  : null;
+
+   if (lastDay === yesterdayStr) {
+    user.streak++;
+} else if (lastDay !== today) {
+    user.streak = 1;
+}
     // 👆 今日すでに送ってる場合は何も変えない（でも処理は通す）
     user.last_reply_date = today;
   }
@@ -302,7 +306,7 @@ const { error: updateError } = await supabase
   .from("users")
   .update({
     streak: user.streak,
-    last_reply_date: user.last_reply_date,
+    last_reply_date: new Date().toISOString(),
     notified: false
   })
   .eq("user_id", userId);
