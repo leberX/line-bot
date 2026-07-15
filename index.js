@@ -368,8 +368,8 @@ cron.schedule('0 9 * * *', async () => {
   }
 );
 
-// ===== 未返信検知（3時間ごと）=====
-cron.schedule('0 */3 * * *', async () => {
+// ===== 未返信検知（1時間ごと）=====
+cron.schedule('0 */1 * * *', async () => {
   console.log("⏳ 未返信チェック");
   console.log("現在時刻:", new Date().toString());
 
